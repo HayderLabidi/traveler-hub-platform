@@ -1,277 +1,127 @@
 
 import { useState } from "react";
-import DashboardLayout from "@/components/DashboardLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar, MapPin, Clock, ArrowRight, Search, Bookmark, RotateCcw } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
-const activityData = [
-  { name: "Mon", rides: 4 },
-  { name: "Tue", rides: 3 },
-  { name: "Wed", rides: 2 },
-  { name: "Thu", rides: 6 },
-  { name: "Fri", rides: 8 },
-  { name: "Sat", rides: 5 },
-  { name: "Sun", rides: 4 },
-];
-
-const upcomingRides = [
-  {
-    id: 1,
-    from: "Downtown San Francisco",
-    to: "San Jose",
-    date: "May 30, 2023",
-    time: "09:30 AM",
-    driver: "Michael E.",
-    price: "$24.50",
-  },
-  {
-    id: 2,
-    from: "Palo Alto",
-    to: "San Francisco Airport",
-    date: "Jun 2, 2023",
-    time: "07:15 AM",
-    driver: "Sarah T.",
-    price: "$35.00",
-  },
-];
-
-const recentRides = [
-  {
-    id: 1,
-    from: "Oakland",
-    to: "San Francisco",
-    date: "May 25, 2023",
-    driver: "Rachel K.",
-    price: "$22.75",
-    status: "completed",
-  },
-  {
-    id: 2,
-    from: "San Francisco",
-    to: "Mountain View",
-    date: "May 23, 2023",
-    driver: "Kevin L.",
-    price: "$28.50",
-    status: "completed",
-  },
-  {
-    id: 3,
-    from: "San Jose",
-    to: "Santa Clara",
-    date: "May 20, 2023",
-    driver: "Amanda W.",
-    price: "$15.25",
-    status: "completed",
-  },
-];
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDarkMode } from "@/providers/DarkModeProvider";
+import { useNavigate } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
 
 const PassengerDashboard = () => {
-  const [fromLocation, setFromLocation] = useState("");
-  const [toLocation, setToLocation] = useState("");
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const navigate = useNavigate();
+  const [rides, setRides] = useState([
+    { id: 1, from: "Home", to: "Work", date: "Today, 9:00 AM", status: "Scheduled" },
+    { id: 2, from: "Work", to: "Gym", date: "Today, 5:30 PM", status: "Scheduled" },
+    { id: 3, from: "Home", to: "Airport", date: "Tomorrow, 10:00 AM", status: "Scheduled" }
+  ]);
+
+  const handleLogout = () => {
+    // In a real app, implement proper logout logic
+    navigate("/");
+  };
 
   return (
-    <DashboardLayout userType="passenger">
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Passenger Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, John! Find your next ride.</p>
+    <div className="min-h-screen bg-background">
+      <header className="bg-card border-b border-border sticky top-0 z-10">
+        <div className="container mx-auto p-4 flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-2xl font-bold text-brand-500">RideShare</h1>
+            <span className="text-blue-600 dark:text-blue-400 font-medium">Passenger</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <Button variant="outline" onClick={handleLogout}>
+              Logout
+            </Button>
           </div>
         </div>
+      </header>
 
-        {/* Search box */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Find a Ride</CardTitle>
-            <CardDescription>Enter your locations to find available rides</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <MapPin size={16} className="text-muted-foreground" />
-                  <span>From</span>
+      <main className="container mx-auto p-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Book a Ride</CardTitle>
+                <CardDescription>Where would you like to go today?</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button className="w-full">Book Now</Button>
+                    <Button variant="outline" className="w-full">Schedule</Button>
+                  </div>
                 </div>
-                <Input 
-                  placeholder="Enter pickup location" 
-                  value={fromLocation}
-                  onChange={(e) => setFromLocation(e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <MapPin size={16} className="text-muted-foreground" />
-                  <span>To</span>
-                </div>
-                <Input 
-                  placeholder="Enter destination" 
-                  value={toLocation}
-                  onChange={(e) => setToLocation(e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Calendar size={16} className="text-muted-foreground" />
-                  <span>When</span>
-                </div>
-                <div className="flex space-x-2">
-                  <Input type="date" className="flex-1" />
-                  <Button type="submit" disabled={!fromLocation || !toLocation}>
-                    <Search className="mr-2 h-4 w-4" />
-                    Search
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Rides</CardTitle>
+                <CardDescription>Your scheduled trips</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {rides.length > 0 ? (
+                  <div className="space-y-4">
+                    {rides.map((ride) => (
+                      <div key={ride.id} className="border rounded-lg p-4 flex justify-between items-center">
+                        <div>
+                          <div className="font-medium">{ride.from} → {ride.to}</div>
+                          <div className="text-sm text-muted-foreground">{ride.date}</div>
+                        </div>
+                        <div>
+                          <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                            {ride.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No upcoming rides</p>
+                    <Button variant="link">Book your first ride</Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="font-medium">John Doe</div>
+                  <div className="text-sm text-muted-foreground">john.doe@example.com</div>
+                  <Button variant="outline" size="sm" className="w-full mt-4">
+                    Edit Profile
                   </Button>
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Activity card */}
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle>Your Activity</CardTitle>
-              <CardDescription>Ride statistics for the last 7 days</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={activityData}
-                    margin={{
-                      top: 10,
-                      right: 30,
-                      left: 0,
-                      bottom: 0,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="rides" stroke="#0EA5E9" fill="#0EA5E9" fillOpacity={0.2} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Saved Places */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Saved Places</CardTitle>
-              <CardDescription>Quickly access your favorite locations</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Button variant="outline" className="w-full justify-start">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  <span>Home</span>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Methods</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button variant="outline" size="sm" className="w-full">
+                  Add Payment Method
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  <span>Work</span>
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  <span>Gym</span>
-                </Button>
-                <Button variant="ghost" className="w-full">
-                  <Bookmark className="mr-2 h-4 w-4" />
-                  <span>Save new place</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-
-        {/* Upcoming Rides */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Upcoming Rides</CardTitle>
-            <CardDescription>Your scheduled rides</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {upcomingRides.length > 0 ? (
-              <div className="space-y-4">
-                {upcomingRides.map((ride) => (
-                  <div key={ride.id} className="flex items-center justify-between p-4 rounded-lg border">
-                    <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
-                      <div className="flex flex-col">
-                        <div className="font-medium">{ride.from}</div>
-                        <div className="text-sm text-muted-foreground flex items-center">
-                          <ArrowRight className="mx-1 h-3 w-3" />
-                        </div>
-                        <div className="font-medium">{ride.to}</div>
-                      </div>
-                      <div className="mt-2 md:mt-0 flex items-center text-sm text-muted-foreground">
-                        <Calendar className="mr-1 h-4 w-4" />
-                        <span>{ride.date}</span>
-                        <Clock className="ml-3 mr-1 h-4 w-4" />
-                        <span>{ride.time}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-medium">{ride.price}</div>
-                      <div className="text-sm">Driver: {ride.driver}</div>
-                      <Button variant="outline" size="sm" className="mt-2">
-                        View details
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-10">
-                <p className="text-muted-foreground">You don't have any upcoming rides</p>
-                <Button className="mt-4">Find a ride</Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent Rides */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Recent Rides</CardTitle>
-              <CardDescription>Your ride history</CardDescription>
-            </div>
-            <Button variant="ghost" size="sm">
-              <RotateCcw className="mr-2 h-4 w-4" />
-              View all
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentRides.map((ride) => (
-                <div key={ride.id} className="flex justify-between items-center p-4 rounded-lg border">
-                  <div>
-                    <div className="font-medium">
-                      {ride.from} to {ride.to}
-                    </div>
-                    <div className="text-sm text-muted-foreground">{ride.date}</div>
-                    <div className="text-sm">Driver: {ride.driver}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">{ride.price}</div>
-                    <div className="text-sm capitalize text-green-600">{ride.status}</div>
-                    <Button variant="ghost" size="sm">
-                      Receipt
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </DashboardLayout>
+      </main>
+    </div>
   );
 };
 
