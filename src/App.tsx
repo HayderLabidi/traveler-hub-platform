@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DarkModeProvider } from "@/providers/DarkModeProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/auth/Login";
+import DriverRegister from "./pages/auth/DriverRegister";
+import PassengerRegister from "./pages/auth/PassengerRegister";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +22,10 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<PassengerRegister />} />
+            <Route path="/driver/register" element={<DriverRegister />} />
+            <Route path="/passenger/register" element={<PassengerRegister />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
