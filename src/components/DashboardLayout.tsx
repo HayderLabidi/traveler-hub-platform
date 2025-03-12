@@ -14,7 +14,9 @@ import {
   CreditCard, 
   MessageSquare, 
   Car, 
-  Star 
+  Star,
+  Sun,
+  Moon
 } from "lucide-react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
