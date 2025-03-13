@@ -31,8 +31,11 @@ const PassengerDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button className="w-full">Book Now</Button>
-                    <Button variant="outline" className="w-full">Schedule</Button>
+                    <Button className="w-full" onClick={() => navigate("/book-ride")}>Book Now</Button>
+                    <Button variant="outline" className="w-full" onClick={() => {
+                      navigate("/book-ride");
+                      // This would pre-select the schedule tab on the booking page
+                    }}>Schedule</Button>
                   </div>
                 </div>
               </CardContent>
@@ -63,7 +66,7 @@ const PassengerDashboard = () => {
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground">No upcoming rides</p>
-                    <Button variant="link">Book your first ride</Button>
+                    <Button variant="link" onClick={() => navigate("/book-ride")}>Book your first ride</Button>
                   </div>
                 )}
               </CardContent>
@@ -79,7 +82,12 @@ const PassengerDashboard = () => {
                 <div className="space-y-2">
                   <div className="font-medium">John Doe</div>
                   <div className="text-sm text-muted-foreground">john.doe@example.com</div>
-                  <Button variant="outline" size="sm" className="w-full mt-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-4"
+                    onClick={() => navigate("/edit-profile")}
+                  >
                     Edit Profile
                   </Button>
                 </div>
@@ -91,7 +99,12 @@ const PassengerDashboard = () => {
                 <CardTitle>Payment Methods</CardTitle>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" size="sm" className="w-full">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => navigate("/payment-methods")}
+                >
                   Add Payment Method
                 </Button>
               </CardContent>

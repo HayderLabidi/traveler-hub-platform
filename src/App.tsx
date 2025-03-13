@@ -15,6 +15,12 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import DriverDashboard from "./pages/dashboard/DriverDashboard";
 import PassengerDashboard from "./pages/dashboard/PassengerDashboard";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import FAQ from "./pages/FAQ";
+import EditProfile from "./pages/dashboard/EditProfile";
+import PaymentMethods from "./pages/dashboard/PaymentMethods";
+import BookRide from "./pages/passenger/BookRide";
 
 const queryClient = new QueryClient();
 
@@ -31,10 +37,16 @@ const App = () => (
             <Route path="/register" element={<PassengerRegister />} />
             <Route path="/driver/register" element={<DriverRegister />} />
             <Route path="/passenger/register" element={<PassengerRegister />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/driver/dashboard" element={<DriverDashboard />} />
             <Route path="/passenger/dashboard" element={<PassengerDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/payment-methods" element={<PaymentMethods />} />
+            <Route path="/book-ride" element={<BookRide />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

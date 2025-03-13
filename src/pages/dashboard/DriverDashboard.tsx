@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,7 +110,7 @@ const DriverDashboard = () => {
                         <div className="font-medium text-green-600">{ride.earnings}</div>
                       </div>
                     ))}
-                    <Button variant="link" className="w-full mt-2">
+                    <Button variant="link" className="w-full mt-2" onClick={() => navigate("/driver/history")}>
                       View Complete History
                     </Button>
                   </div>
@@ -132,7 +133,12 @@ const DriverDashboard = () => {
                   <div className="font-medium">James Smith</div>
                   <div className="text-sm text-muted-foreground">james.smith@example.com</div>
                   <div className="text-sm text-muted-foreground">Vehicle: Sedan</div>
-                  <Button variant="outline" size="sm" className="w-full mt-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-4"
+                    onClick={() => navigate("/edit-profile")}
+                  >
                     Edit Profile
                   </Button>
                 </div>
@@ -157,7 +163,7 @@ const DriverDashboard = () => {
                     <span>This Month</span>
                     <span className="font-medium">$1,245.80</span>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full mt-2">
+                  <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => navigate("/driver/earnings")}>
                     View Earnings Details
                   </Button>
                 </div>

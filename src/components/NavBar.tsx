@@ -43,6 +43,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
                   <Link to="/" className="nav-link">Home</Link>
                   <Link to="/about" className="nav-link">About</Link>
                   <Link to="/contact" className="nav-link">Contact</Link>
+                  <Link to="/faq" className="nav-link">FAQ</Link>
                   <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   </button>
@@ -61,6 +62,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
                 </>
               ) : (
                 <>
+                  <Link to="/faq" className="nav-link">FAQ</Link>
                   <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   </button>
@@ -100,6 +102,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
                 <Link to="/" className="block nav-link">Home</Link>
                 <Link to="/about" className="block nav-link">About</Link>
                 <Link to="/contact" className="block nav-link">Contact</Link>
+                <Link to="/faq" className="block nav-link">FAQ</Link>
                 <Button 
                   variant="outline" 
                   className="w-full mt-4"
@@ -121,17 +124,20 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
                 </Button>
               </>
             ) : (
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-              >
-                <LogOut size={16} className="mr-2" />
-                Logout
-              </Button>
+              <>
+                <Link to="/faq" className="block nav-link">FAQ</Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <LogOut size={16} className="mr-2" />
+                  Logout
+                </Button>
+              </>
             )}
           </div>
         </div>
