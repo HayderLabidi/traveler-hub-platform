@@ -21,7 +21,7 @@ const ChatbotButton = () => {
           className="h-14 w-14 rounded-full shadow-lg bg-brand-500 hover:bg-brand-600 p-0 flex items-center justify-center"
           aria-label="Open chat"
         >
-          <MessageCircle size={24} />
+          <MessageCircle size={24} className="text-white" />
         </Button>
       )}
     </div>

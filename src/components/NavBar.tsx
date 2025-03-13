@@ -1,9 +1,8 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Moon, Sun } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu, X, Moon, Sun, LogOut } from "lucide-react";
 
 interface NavBarProps {
   isDarkMode: boolean;
@@ -13,9 +12,18 @@ interface NavBarProps {
 const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  
+  // Check if user is on a dashboard page
+  const isOnDashboard = location.pathname.includes('/dashboard');
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    // For now just redirect to home, in a real app would handle auth logout
+    navigate("/");
   };
 
   return (
@@ -30,24 +38,42 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
           
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <Link to="/" className="nav-link">Home</Link>
-              <Link to="/about" className="nav-link">About</Link>
-              <Link to="/contact" className="nav-link">Contact</Link>
-              <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              <Button 
-                variant="outline" 
-                className="ml-4"
-                onClick={() => navigate("/login")}
-              >
-                Log in
-              </Button>
-              <Button 
-                onClick={() => navigate("/register")}
-              >
-                Sign up
-              </Button>
+              {!isOnDashboard ? (
+                <>
+                  <Link to="/" className="nav-link">Home</Link>
+                  <Link to="/about" className="nav-link">About</Link>
+                  <Link to="/contact" className="nav-link">Contact</Link>
+                  <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                  </button>
+                  <Button 
+                    variant="outline" 
+                    className="ml-4"
+                    onClick={() => navigate("/login")}
+                  >
+                    Log in
+                  </Button>
+                  <Button 
+                    onClick={() => navigate("/register")}
+                  >
+                    Sign up
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                  </button>
+                  <Button 
+                    variant="outline" 
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2"
+                  >
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -69,28 +95,44 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
       {isMenuOpen && (
         <div className="md:hidden animate-slide-in-right">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background shadow-lg">
-            <Link to="/" className="block nav-link">Home</Link>
-            <Link to="/about" className="block nav-link">About</Link>
-            <Link to="/contact" className="block nav-link">Contact</Link>
-            <Button 
-              variant="outline" 
-              className="w-full mt-4"
-              onClick={() => {
-                navigate("/login");
-                setIsMenuOpen(false);
-              }}
-            >
-              Log in
-            </Button>
-            <Button 
-              className="w-full mt-2"
-              onClick={() => {
-                navigate("/register");
-                setIsMenuOpen(false);
-              }}
-            >
-              Sign up
-            </Button>
+            {!isOnDashboard ? (
+              <>
+                <Link to="/" className="block nav-link">Home</Link>
+                <Link to="/about" className="block nav-link">About</Link>
+                <Link to="/contact" className="block nav-link">Contact</Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-4"
+                  onClick={() => {
+                    navigate("/login");
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Log in
+                </Button>
+                <Button 
+                  className="w-full mt-2"
+                  onClick={() => {
+                    navigate("/register");
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Sign up
+                </Button>
+              </>
+            ) : (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+              >
+                <LogOut size={16} className="mr-2" />
+                Logout
+              </Button>
+            )}
           </div>
         </div>
       )}

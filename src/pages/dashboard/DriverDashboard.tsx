@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useNavigate } from "react-router-dom";
-import { Moon, Sun, X, Check, Clock } from "lucide-react";
+import { Check, Clock, X } from "lucide-react";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
 const DriverDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -20,38 +22,15 @@ const DriverDashboard = () => {
     { id: 103, passenger: "Eve Brown", date: "3 days ago", earnings: "$9.75", distance: "2.8 miles" }
   ]);
 
-  const handleLogout = () => {
-    // In a real app, implement proper logout logic
-    navigate("/");
-  };
-
   const toggleOnlineStatus = () => {
     setIsOnline(!isOnline);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="container mx-auto p-4 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-brand-500">RideShare</h1>
-            <span className="text-green-600 dark:text-green-400 font-medium">Driver</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <Button variant="outline" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background flex flex-col">
+      <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
-      <main className="container mx-auto p-4 py-8">
+      <main className="container mx-auto p-4 py-8 mt-16 flex-grow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <Card>
@@ -187,6 +166,8 @@ const DriverDashboard = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };
