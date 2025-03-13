@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import ChatbotButton from "@/components/Chatbot/ChatbotButton";
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -164,6 +165,9 @@ const Index = () => {
       </section>
       
       <Footer />
+      
+      {/* Add the ChatbotButton component */}
+      <ChatbotButton />
     </div>
   );
 };
