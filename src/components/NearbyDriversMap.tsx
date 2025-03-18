@@ -4,6 +4,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Car } from 'lucide-react';
 
 interface Driver {
   id: number;
@@ -14,6 +15,14 @@ interface Driver {
     lat: number;
   };
   distance: string;
+  vehicle?: {
+    make?: string;
+    model?: string;
+    year?: string;
+    color?: string;
+    image?: string;
+    seatsAvailable?: number;
+  };
 }
 
 interface NearbyDriversMapProps {
@@ -120,11 +129,24 @@ const NearbyDriversMap: React.FC<NearbyDriversMapProps> = ({ drivers, center, ra
 
       // Add driver markers
       drivers.forEach((driver) => {
+        // Create a popup with driver info, including vehicle details if available
+        const vehicleInfo = driver.vehicle ? `
+          <div class="mt-1 pt-1 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm">
+              ${driver.vehicle.make || ''} ${driver.vehicle.model || ''}
+              ${driver.vehicle.year ? `(${driver.vehicle.year})` : ''}
+              ${driver.vehicle.color ? `, ${driver.vehicle.color}` : ''}
+            </p>
+            ${driver.vehicle.seatsAvailable ? `<p class="text-sm">${driver.vehicle.seatsAvailable} seats available</p>` : ''}
+          </div>
+        ` : '';
+
         // Create a popup with driver info
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
           `<div>
             <h3 class="font-medium">${driver.name}</h3>
             <p>${driver.rating} ⭐ • ${driver.distance}</p>
+            ${vehicleInfo}
           </div>`
         );
 

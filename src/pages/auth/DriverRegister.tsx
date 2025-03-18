@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
+import { FormFileUpload } from "@/components/ui/form-file-upload";
+import { Car } from "lucide-react";
 
 const DriverRegister = () => {
   const [formData, setFormData] = useState({
@@ -19,8 +21,15 @@ const DriverRegister = () => {
     confirmPassword: "",
     driverLicense: "",
     vehicleType: "",
+    vehicleModel: "",
+    vehicleYear: "",
+    vehicleColor: "",
+    licensePlate: "",
+    seatsAvailable: "4",
     agreeToTerms: false,
   });
+  
+  const [carImage, setCarImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
@@ -76,6 +85,18 @@ const DriverRegister = () => {
         });
         return;
       }
+
+      if (!carImage) {
+        toast({
+          title: "Error",
+          description: "Please upload an image of your car",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // In a real app, you would upload the car image and send all data to the server
+      // For now, we just simulate success
       
       navigate("/driver/dashboard");
       toast({
@@ -155,26 +176,118 @@ const DriverRegister = () => {
           />
         </div>
         
-        <div className="space-y-2">
-          <Label htmlFor="vehicleType">Vehicle Type</Label>
-          <Select 
-            onValueChange={(value) => handleSelectChange("vehicleType", value)}
-            value={formData.vehicleType}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select vehicle type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sedan">Sedan</SelectItem>
-              <SelectItem value="suv">SUV</SelectItem>
-              <SelectItem value="minivan">Minivan</SelectItem>
-              <SelectItem value="electric">Electric</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+        {/* Vehicle Information Section */}
+        <div className="pt-2 border-t">
+          <h3 className="text-lg font-medium mb-4 flex items-center">
+            <Car className="mr-2" size={20} />
+            Vehicle Information
+          </h3>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="vehicleType">Vehicle Type</Label>
+              <Select 
+                onValueChange={(value) => handleSelectChange("vehicleType", value)}
+                value={formData.vehicleType}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select vehicle type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sedan">Sedan</SelectItem>
+                  <SelectItem value="suv">SUV</SelectItem>
+                  <SelectItem value="minivan">Minivan</SelectItem>
+                  <SelectItem value="electric">Electric</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="vehicleModel">Vehicle Model</Label>
+              <Input
+                id="vehicleModel"
+                name="vehicleModel"
+                placeholder="Toyota Camry"
+                value={formData.vehicleModel}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="vehicleYear">Vehicle Year</Label>
+              <Input
+                id="vehicleYear"
+                name="vehicleYear"
+                placeholder="2020"
+                value={formData.vehicleYear}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="vehicleColor">Vehicle Color</Label>
+              <Input
+                id="vehicleColor"
+                name="vehicleColor"
+                placeholder="Silver"
+                value={formData.vehicleColor}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="licensePlate">License Plate</Label>
+              <Input
+                id="licensePlate"
+                name="licensePlate"
+                placeholder="ABC123"
+                value={formData.licensePlate}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="seatsAvailable">Available Seats</Label>
+              <Select 
+                onValueChange={(value) => handleSelectChange("seatsAvailable", value)}
+                value={formData.seatsAvailable}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select number of seats" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 seat</SelectItem>
+                  <SelectItem value="2">2 seats</SelectItem>
+                  <SelectItem value="3">3 seats</SelectItem>
+                  <SelectItem value="4">4 seats</SelectItem>
+                  <SelectItem value="5">5 seats</SelectItem>
+                  <SelectItem value="6">6+ seats</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <FormFileUpload
+              label="Upload Car Image"
+              onChange={setCarImage}
+              value={carImage}
+              accept="image/*"
+              id="car-image"
+            />
+          </div>
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-2 pt-2 border-t">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"

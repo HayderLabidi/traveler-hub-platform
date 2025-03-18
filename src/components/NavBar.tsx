@@ -14,8 +14,13 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Check if user is on a dashboard page
-  const isOnDashboard = location.pathname.includes('/dashboard');
+  // Check if user is on a dashboard page or authenticated page
+  const isAuthenticated = location.pathname.includes('/dashboard') || 
+                          location.pathname.includes('/profile') ||
+                          location.pathname.includes('/settings') ||
+                          location.pathname.includes('/bookings') ||
+                          location.pathname.includes('/rides') ||
+                          location.pathname.includes('/earnings');
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -38,7 +43,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
           
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              {!isOnDashboard ? (
+              {!isAuthenticated ? (
                 <>
                   <Link to="/" className="nav-link">Home</Link>
                   <Link to="/about" className="nav-link">About</Link>
@@ -97,7 +102,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
       {isMenuOpen && (
         <div className="md:hidden animate-slide-in-right">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background shadow-lg">
-            {!isOnDashboard ? (
+            {!isAuthenticated ? (
               <>
                 <Link to="/" className="block nav-link">Home</Link>
                 <Link to="/about" className="block nav-link">About</Link>
