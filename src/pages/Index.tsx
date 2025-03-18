@@ -70,7 +70,7 @@ const Index = () => {
             </div>
             <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
               <img 
-                src="https://images.unsplash.com/photo-1466721591366-2d5fba72006d?auto=format&fit=crop&q=80" 
+                src="/public/Carpool.gif" 
                 alt="People carpooling" 
                 className="w-full h-[400px] object-cover" 
               />

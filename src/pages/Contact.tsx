@@ -127,7 +127,7 @@ const Contact = () => {
                   <div>
                     <p className="font-medium">Phone</p>
                     <a href="tel:+11234567890" className="text-blue-500 hover:text-blue-600">
-                      +1 (123) 456-7890
+                      +216 29019040
                     </a>
                   </div>
                 </li>
@@ -138,8 +138,8 @@ const Contact = () => {
                     <p className="font-medium">Office</p>
                     <address className="not-italic">
                       123 RideShare Blvd<br />
-                      San Francisco, CA 94103<br />
-                      United States
+                      Sidi Bouzid , Tunisia<br />
+                      Tunisia
                     </address>
                   </div>
                 </li>
