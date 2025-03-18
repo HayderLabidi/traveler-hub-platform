@@ -1,15 +1,9 @@
-
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun, LogOut } from "lucide-react";
 
-interface NavBarProps {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-}
-
-const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
+const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -151,4 +145,4 @@ const NavBar = ({ isDarkMode, toggleDarkMode }: NavBarProps) => {
   );
 };
 
-export default NavBar;
+export default NavBar; 

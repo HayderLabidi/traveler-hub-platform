@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
@@ -85,4 +84,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default About; 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,7 @@ const UsersPage = () => {
       user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDeleteUser = (id: number) => {
+  const handleDeleteUser = (id) => {
     setUsers(users.filter(user => user.id !== id));
   };
 

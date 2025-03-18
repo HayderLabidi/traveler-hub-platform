@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -29,13 +28,13 @@ const DriverRegister = () => {
     agreeToTerms: false,
   });
   
-  const [carImage, setCarImage] = useState<File | null>(null);
+  const [carImage, setCarImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
@@ -43,14 +42,14 @@ const DriverRegister = () => {
     });
   };
 
-  const handleSelectChange = (name: string, value: string) => {
+  const handleSelectChange = (name, value) => {
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -265,29 +264,27 @@ const DriverRegister = () => {
                   <SelectValue placeholder="Select number of seats" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1 seat</SelectItem>
                   <SelectItem value="2">2 seats</SelectItem>
                   <SelectItem value="3">3 seats</SelectItem>
                   <SelectItem value="4">4 seats</SelectItem>
                   <SelectItem value="5">5 seats</SelectItem>
-                  <SelectItem value="6">6+ seats</SelectItem>
+                  <SelectItem value="6">6 seats</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           
           <div className="mt-4">
+            <Label>Car Image</Label>
             <FormFileUpload
-              label="Upload Car Image"
-              onChange={setCarImage}
-              value={carImage}
               accept="image/*"
-              id="car-image"
+              onChange={(file) => setCarImage(file)}
+              className="mt-2"
             />
           </div>
         </div>
         
-        <div className="space-y-2 pt-2 border-t">
+        <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
@@ -319,7 +316,7 @@ const DriverRegister = () => {
             name="agreeToTerms"
             checked={formData.agreeToTerms}
             onCheckedChange={(checked) => 
-              setFormData({...formData, agreeToTerms: checked as boolean})
+              setFormData({...formData, agreeToTerms: checked})
             }
           />
           <label
@@ -352,4 +349,4 @@ const DriverRegister = () => {
   );
 };
 
-export default DriverRegister;
+export default DriverRegister; 

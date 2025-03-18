@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ const PassengerRegister = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
@@ -30,7 +29,7 @@ const PassengerRegister = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -142,7 +141,7 @@ const PassengerRegister = () => {
             name="agreeToTerms"
             checked={formData.agreeToTerms}
             onCheckedChange={(checked) => 
-              setFormData({...formData, agreeToTerms: checked as boolean})
+              setFormData({...formData, agreeToTerms: checked})
             }
           />
           <label
@@ -175,4 +174,4 @@ const PassengerRegister = () => {
   );
 };
 
-export default PassengerRegister;
+export default PassengerRegister; 

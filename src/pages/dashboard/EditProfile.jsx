@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,12 +26,12 @@ const EditProfile = () => {
   
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -46,7 +45,7 @@ const EditProfile = () => {
     }, 1000);
   };
   
-  const handlePasswordUpdate = (e: React.FormEvent) => {
+  const handlePasswordUpdate = (e) => {
     e.preventDefault();
     setIsLoading(true);
     

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,13 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState<"passenger" | "driver" | "admin">("passenger");
+  const [userType, setUserType] = useState("passenger");
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -61,7 +60,7 @@ const Login = () => {
       subtitle="Sign in to your account to continue"
       userType={userType}
     >
-      <Tabs defaultValue="passenger" onValueChange={(value) => setUserType(value as any)}>
+      <Tabs defaultValue="passenger" onValueChange={(value) => setUserType(value)}>
         <TabsList className="grid grid-cols-3 w-full mb-6">
           <TabsTrigger value="passenger">Passenger</TabsTrigger>
           <TabsTrigger value="driver">Driver</TabsTrigger>
@@ -189,4 +188,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login; 

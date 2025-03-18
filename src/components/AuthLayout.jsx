@@ -1,17 +1,8 @@
-
-import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { Moon, Sun } from "lucide-react";
 
-interface AuthLayoutProps {
-  children: ReactNode;
-  title: string;
-  subtitle?: string;
-  userType?: "passenger" | "driver" | "admin";
-}
-
-const AuthLayout = ({ children, title, subtitle, userType }: AuthLayoutProps) => {
+const AuthLayout = ({ children, title, subtitle, userType }) => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const getUserTypeColor = () => {
@@ -63,4 +54,4 @@ const AuthLayout = ({ children, title, subtitle, userType }: AuthLayoutProps) =>
   );
 };
 
-export default AuthLayout;
+export default AuthLayout; 

@@ -12,28 +12,6 @@ import { MapPin, Search, Filter, Star, Clock, ChevronDown, CarFront, MessageSqua
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-interface Driver {
-  id: number;
-  name: string;
-  rating: number;
-  location: {
-    lng: number;
-    lat: number;
-  };
-  distance: string;
-  vehicle?: {
-    make?: string;
-    model?: string;
-    year?: string;
-    color?: string;
-    image?: string;
-    seatsAvailable?: number;
-  };
-  price?: string;
-  departureTime?: string;
-  image?: string;
-}
-
 const PassengerDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
@@ -46,9 +24,9 @@ const PassengerDashboard = () => {
   const [searchRadius, setSearchRadius] = useState(5); // 5 km default
   const [searchLocation, setSearchLocation] = useState("");
   const [showDriversMap, setShowDriversMap] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
+  const [viewMode, setViewMode] = useState("grid");
   
-  const [nearbyDrivers, setNearbyDrivers] = useState<Driver[]>([
+  const [nearbyDrivers, setNearbyDrivers] = useState([
     { 
       id: 1, 
       name: "David Johnson", 
@@ -232,7 +210,7 @@ const PassengerDashboard = () => {
                   
                   {showDriversMap && (
                     <div className="mt-4">
-                      <Tabs defaultValue="grid" className="w-full" onValueChange={(value) => setViewMode(value as "grid" | "map")}>
+                      <Tabs defaultValue="grid" className="w-full" onValueChange={(value) => setViewMode(value)}>
                         <div className="flex justify-between items-center mb-4">
                           <TabsList>
                             <TabsTrigger value="grid">Grid View</TabsTrigger>

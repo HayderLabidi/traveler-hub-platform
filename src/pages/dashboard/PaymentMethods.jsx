@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +30,7 @@ const PaymentMethods = () => {
     cvc: ""
   });
 
-  const handleAddCard = (e: React.FormEvent) => {
+  const handleAddCard = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -70,7 +69,7 @@ const PaymentMethods = () => {
     }, 1500);
   };
 
-  const handleDeleteCard = (id: number) => {
+  const handleDeleteCard = (id) => {
     setPaymentMethods(prevMethods => {
       const deletedCard = prevMethods.find(method => method.id === id);
       const newMethods = prevMethods.filter(method => method.id !== id);
@@ -91,7 +90,7 @@ const PaymentMethods = () => {
     });
   };
 
-  const handleSetDefault = (id: number) => {
+  const handleSetDefault = (id) => {
     setPaymentMethods(prevMethods => 
       prevMethods.map(method => ({
         ...method,
@@ -250,23 +249,23 @@ const PaymentMethods = () => {
                         value={newCard.cvc}
                         onChange={(e) => setNewCard({...newCard, cvc: e.target.value})}
                         required
-                        maxLength={4}
+                        maxLength={3}
                       />
                     </div>
                   </div>
                   
-                  <div className="flex gap-4 pt-2">
+                  <div className="flex gap-2 mt-6">
                     <Button 
                       type="button" 
                       variant="outline" 
-                      className="flex-1" 
+                      className="flex-1"
                       onClick={() => setIsAddingNew(false)}
                     >
                       Cancel
                     </Button>
                     <Button 
                       type="submit" 
-                      className="flex-1" 
+                      className="flex-1"
                       disabled={isLoading}
                     >
                       {isLoading ? "Adding..." : "Add Card"}
@@ -278,10 +277,10 @@ const PaymentMethods = () => {
           )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
 };
 
-export default PaymentMethods;
+export default PaymentMethods; 

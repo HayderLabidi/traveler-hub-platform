@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +20,8 @@ const BookRide = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [bookingType, setBookingType] = useState<"now" | "schedule">("now");
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [bookingType, setBookingType] = useState("now");
+  const [date, setDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [rideDetails, setRideDetails] = useState({
     pickup: "",
@@ -36,14 +35,14 @@ const BookRide = () => {
     { id: 3, type: "XL", price: "$22.00", time: "7 min away", driver: "Mike J.", rating: 4.7 }
   ]);
   
-  const [selectedRide, setSelectedRide] = useState<number | null>(null);
+  const [selectedRide, setSelectedRide] = useState(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setRideDetails(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
@@ -125,7 +124,7 @@ const BookRide = () => {
               <Tabs 
                 defaultValue="now" 
                 value={bookingType} 
-                onValueChange={(value) => setBookingType(value as "now" | "schedule")}
+                onValueChange={(value) => setBookingType(value)}
                 className="mb-6"
               >
                 <TabsList className="grid w-full grid-cols-2">

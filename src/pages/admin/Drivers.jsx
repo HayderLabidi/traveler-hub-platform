@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -105,11 +104,11 @@ const DriversPage = () => {
     }
   );
 
-  const handleDeleteDriver = (id: number) => {
+  const handleDeleteDriver = (id) => {
     setDrivers(drivers.filter(driver => driver.id !== id));
   };
 
-  const handleApproveDriver = (id: number) => {
+  const handleApproveDriver = (id) => {
     setDrivers(drivers.map(driver => 
       driver.id === id 
         ? {...driver, status: "Active", approved: true, pending: false} 
@@ -117,7 +116,7 @@ const DriversPage = () => {
     ));
   };
 
-  const handleRejectDriver = (id: number) => {
+  const handleRejectDriver = (id) => {
     setDrivers(drivers.filter(driver => driver.id !== id));
   };
 
@@ -255,7 +254,7 @@ const DriversPage = () => {
                       </TableCell>
                     </TableRow>
                   )}
-                </TableBody>
+                </TableBody>    
               </Table>
             </div>
           </CardContent>

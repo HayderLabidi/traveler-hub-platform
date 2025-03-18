@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -6,44 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Car } from 'lucide-react';
 
-interface Driver {
-  id: number;
-  name: string;
-  rating: number;
-  location: {
-    lng: number;
-    lat: number;
-  };
-  distance: string;
-  vehicle?: {
-    make?: string;
-    model?: string;
-    year?: string;
-    color?: string;
-    image?: string;
-    seatsAvailable?: number;
-  };
-}
-
-interface NearbyDriversMapProps {
-  drivers: Driver[];
-  center: {
-    lng: number;
-    lat: number;
-  };
-  radius: number;
-}
-
-const NearbyDriversMap: React.FC<NearbyDriversMapProps> = ({ drivers, center, radius }) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-
-  // This would be replaced with your actual Mapbox token in a real implementation
-  // For demo purposes, we're using a state to simulate user input
+const NearbyDriversMap = ({ drivers, center, radius }) => {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [mapboxToken, setMapboxToken] = useState('');
   const [showTokenInput, setShowTokenInput] = useState(true);
 
-  const handleTokenSubmit = (token: string) => {
+  const handleTokenSubmit = (token) => {
     setMapboxToken(token);
     setShowTokenInput(false);
   };
@@ -156,7 +124,7 @@ const NearbyDriversMap: React.FC<NearbyDriversMapProps> = ({ drivers, center, ra
         })
           .setLngLat([driver.location.lng, driver.location.lat])
           .setPopup(popup)
-          .addTo(map.current!);
+          .addTo(map.current);
       });
     });
 
@@ -201,4 +169,4 @@ const NearbyDriversMap: React.FC<NearbyDriversMapProps> = ({ drivers, center, ra
   );
 };
 
-export default NearbyDriversMap;
+export default NearbyDriversMap; 

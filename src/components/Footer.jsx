@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Mail, Phone } from "lucide-react";
 
@@ -57,7 +56,7 @@ const Footer = () => {
               <li className="flex items-center">
                 <Phone size={16} className="mr-2 text-gray-500" />
                 <a href="tel:+1-555-123-4567" className="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">
-                  +1-555-123-4567
+                  +216 29019040
                 </a>
               </li>
             </ul>
@@ -67,7 +66,7 @@ const Footer = () => {
         <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} RideShare. All rights reserved.
+              &copy; {new Date().getFullYear()} RideShare by Hayder and Jacer. All rights reserved.
             </p>
             <div className="flex space-x-4 mt-4 md:mt-0 text-sm">
               <Link to="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Privacy Policy</Link>
@@ -81,4 +80,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer; 

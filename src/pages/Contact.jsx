@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
@@ -15,12 +14,12 @@ const Contact = () => {
     message: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     
@@ -181,4 +180,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Contact; 

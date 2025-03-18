@@ -1,5 +1,4 @@
-
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
@@ -30,12 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-  userType: "passenger" | "driver" | "admin";
-}
-
-const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
+const DashboardLayout = ({ children, userType }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
@@ -251,4 +245,4 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   );
 };
 
-export default DashboardLayout;
+export default DashboardLayout; 

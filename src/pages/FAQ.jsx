@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -121,4 +120,4 @@ const FAQ = () => {
   );
 };
 
-export default FAQ;
+export default FAQ; 

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Car, Users, Clock, Shield, Mail } from "lucide-react";
@@ -70,7 +69,7 @@ const Index = () => {
             </div>
             <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
               <img 
-                src="/public/Carpool.gif" 
+                src="/Carpool.gif" 
                 alt="People carpooling" 
                 className="w-full h-[400px] object-cover" 
               />
@@ -172,4 +171,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Index; 
