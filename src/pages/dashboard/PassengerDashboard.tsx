@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +11,28 @@ import NearbyDriversMap from "@/components/NearbyDriversMap";
 import { MapPin, Search, Filter, Star, Clock, ChevronDown, CarFront, MessageSquare } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
+interface Driver {
+  id: number;
+  name: string;
+  rating: number;
+  location: {
+    lng: number;
+    lat: number;
+  };
+  distance: string;
+  vehicle?: {
+    make?: string;
+    model?: string;
+    year?: string;
+    color?: string;
+    image?: string;
+    seatsAvailable?: number;
+  };
+  price?: string;
+  departureTime?: string;
+  image?: string;
+}
 
 const PassengerDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -27,17 +48,20 @@ const PassengerDashboard = () => {
   const [showDriversMap, setShowDriversMap] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   
-  // Mock data for nearby drivers - enhanced for marketplace
-  const [nearbyDrivers, setNearbyDrivers] = useState([
+  const [nearbyDrivers, setNearbyDrivers] = useState<Driver[]>([
     { 
       id: 1, 
       name: "David Johnson", 
       rating: 4.8, 
       location: { lng: -73.985, lat: 40.748 }, 
       distance: "2.1 km",
-      vehicle: "Tesla Model 3",
+      vehicle: {
+        make: "Tesla",
+        model: "Model 3",
+        seatsAvailable: 3,
+        image: "https://images.unsplash.com/photo-1617704548623-340376564e68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dGVzbGElMjBtb2RlbCUyMDN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$15",
-      availableSeats: 3,
       departureTime: "10:30 AM",
       image: "https://randomuser.me/api/portraits/men/32.jpg"
     },
@@ -47,9 +71,13 @@ const PassengerDashboard = () => {
       rating: 4.7, 
       location: { lng: -73.978, lat: 40.752 }, 
       distance: "3.4 km",
-      vehicle: "Honda Civic",
+      vehicle: {
+        make: "Honda",
+        model: "Civic",
+        seatsAvailable: 2,
+        image: "https://images.unsplash.com/photo-1590510600147-ae41b578c645?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aG9uZGElMjBjaXZpY3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$12",
-      availableSeats: 2,
       departureTime: "11:15 AM",
       image: "https://randomuser.me/api/portraits/women/44.jpg"
     },
@@ -59,9 +87,13 @@ const PassengerDashboard = () => {
       rating: 4.9, 
       location: { lng: -73.990, lat: 40.745 }, 
       distance: "1.8 km",
-      vehicle: "Toyota Camry",
+      vehicle: {
+        make: "Toyota",
+        model: "Camry",
+        seatsAvailable: 4,
+        image: "https://images.unsplash.com/photo-1621007690695-36e0e48f30e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dG95b3RhJTIwY2FtcnklMjAyMDIwfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$14",
-      availableSeats: 4,
       departureTime: "9:45 AM",
       image: "https://randomuser.me/api/portraits/men/22.jpg"
     },
@@ -71,9 +103,13 @@ const PassengerDashboard = () => {
       rating: 4.6, 
       location: { lng: -73.982, lat: 40.755 }, 
       distance: "2.5 km",
-      vehicle: "Ford Escape",
+      vehicle: {
+        make: "Ford",
+        model: "Escape",
+        seatsAvailable: 3,
+        image: "https://images.unsplash.com/photo-1551830820-330a71b99659?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9yZCUyMGVzY2FwZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$13",
-      availableSeats: 3,
       departureTime: "10:00 AM",
       image: "https://randomuser.me/api/portraits/women/28.jpg"
     },
@@ -83,9 +119,13 @@ const PassengerDashboard = () => {
       rating: 4.8, 
       location: { lng: -73.975, lat: 40.760 }, 
       distance: "4.2 km",
-      vehicle: "Hyundai Sonata",
+      vehicle: {
+        make: "Hyundai",
+        model: "Sonata",
+        seatsAvailable: 2,
+        image: "https://images.unsplash.com/photo-1629421889814-adfa53e480f2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aHl1bmRhaSUyMHNvbmF0YXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$11",
-      availableSeats: 2,
       departureTime: "11:30 AM",
       image: "https://randomuser.me/api/portraits/men/45.jpg" 
     },
@@ -95,9 +135,13 @@ const PassengerDashboard = () => {
       rating: 4.9, 
       location: { lng: -73.995, lat: 40.740 }, 
       distance: "3.1 km",
-      vehicle: "Chevrolet Malibu",
+      vehicle: {
+        make: "Chevrolet",
+        model: "Malibu",
+        seatsAvailable: 3,
+        image: "https://images.unsplash.com/photo-1638618164682-12b986ec2a75?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hldnJvbGV0JTIwbWFsaWJ1fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"
+      },
       price: "$15",
-      availableSeats: 3,
       departureTime: "9:30 AM",
       image: "https://randomuser.me/api/portraits/women/33.jpg"
     },
@@ -111,8 +155,6 @@ const PassengerDashboard = () => {
   });
   
   const handleLocationSearch = () => {
-    // In a real app, this would call an API to find nearby drivers
-    // For demo purposes, we'll just show the results
     setShowDriversMap(true);
   };
 
@@ -120,8 +162,6 @@ const PassengerDashboard = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // Here you would call your backend API with these coordinates
-          // For demo purposes, we'll just set a placeholder and show the results
           setSearchLocation("Current Location");
           setShowDriversMap(true);
         },
@@ -252,14 +292,14 @@ const PassengerDashboard = () => {
                                   <div className="mt-3 space-y-2">
                                     <div className="flex items-center gap-2 text-sm">
                                       <CarFront size={14} />
-                                      <span>{driver.vehicle}</span>
+                                      <span>{driver.vehicle?.make} {driver.vehicle?.model}</span>
                                     </div>
                                     <div className="flex items-center gap-2 text-sm">
                                       <Clock size={14} />
                                       <span>Departing at {driver.departureTime}</span>
                                     </div>
                                     <div className="text-sm">
-                                      {driver.availableSeats} seats available
+                                      {driver.vehicle?.seatsAvailable} seats available
                                     </div>
                                   </div>
                                   
