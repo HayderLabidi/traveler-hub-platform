@@ -71,122 +71,84 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Driver Approvals</CardTitle>
-              <CardDescription>Pending driver registrations requiring approval</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Driver #{item}</p>
-                      <p className="text-sm text-muted-foreground">Applied: {item} day{item !== 1 ? 's' : ''} ago</p>
-                    </div>
-                    <Button size="sm">
-                      Review
-                    </Button>
+      <div className="grid grid-cols-1 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Driver Approvals</CardTitle>
+            <CardDescription>Pending driver registrations requiring approval</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Driver #{item}</p>
+                    <p className="text-sm text-muted-foreground">Applied: {item} day{item !== 1 ? 's' : ''} ago</p>
                   </div>
-                ))}
-                <Button variant="outline" className="w-full" onClick={() => navigate("/admin/drivers")}>
-                  View All Pending Approvals
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest actions on the platform</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { action: "New user registration", time: "10 minutes ago" },
-                  { action: "Driver approved", time: "1 hour ago" },
-                  { action: "Payment processed", time: "3 hours ago" },
-                  { action: "Ride completed", time: "6 hours ago" }
-                ].map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{activity.action}</p>
-                      <p className="text-sm text-muted-foreground">{activity.time}</p>
-                    </div>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <Button size="sm">
+                    Review
+                  </Button>
+                </div>
+              ))}
+              <Button variant="outline" className="w-full" onClick={() => navigate("/admin/drivers")}>
+                View All Pending Approvals
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
         
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Admin Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Button className="w-full" onClick={() => navigate("/admin/users")}>
-                  <Users className="mr-2 h-4 w-4" />
-                  Manage Users
-                </Button>
-                <Button className="w-full" onClick={() => navigate("/admin/drivers")}>
-                  <Car className="mr-2 h-4 w-4" />
-                  Manage Drivers
-                </Button>
-                <Button className="w-full" onClick={() => navigate("/admin/rides")}>
-                  <Car className="mr-2 h-4 w-4" />
-                  View Ride History
-                </Button>
-                <Button className="w-full" onClick={() => navigate("/admin/payments")}>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Payment Reports
-                </Button>
-                <Button className="w-full" onClick={() => navigate("/admin/support")}>
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Support Tickets
-                </Button>
-                <Button className="w-full" onClick={() => navigate("/admin/settings")}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  System Settings
-                </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>Latest actions on the platform</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                { action: "New user registration", time: "10 minutes ago" },
+                { action: "Driver approved", time: "1 hour ago" },
+                { action: "Payment processed", time: "3 hours ago" },
+                { action: "Ride completed", time: "6 hours ago" }
+              ].map((activity, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">{activity.action}</p>
+                    <p className="text-sm text-muted-foreground">{activity.time}</p>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>System Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span>API Status</span>
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                  Operational
+                </span>
               </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>System Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span>API Status</span>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                    Operational
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Database</span>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                    Operational
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Payment Gateway</span>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                    Operational
-                  </span>
-                </div>
+              <div className="flex justify-between items-center">
+                <span>Database</span>
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                  Operational
+                </span>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="flex justify-between items-center">
+                <span>Payment Gateway</span>
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                  Operational
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

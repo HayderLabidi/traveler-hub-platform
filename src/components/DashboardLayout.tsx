@@ -1,6 +1,6 @@
 
 import { ReactNode, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   User, 
@@ -39,6 +39,7 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const passengerNavItems = [
@@ -108,6 +109,19 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
     }
   };
 
+  const getHoverColorClass = () => {
+    switch (userType) {
+      case "passenger":
+        return "hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/10 dark:hover:text-blue-300";
+      case "driver":
+        return "hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/10 dark:hover:text-green-300";
+      case "admin":
+        return "hover:bg-purple-50 hover:text-purple-700 dark:hover:bg-purple-900/10 dark:hover:text-purple-300";
+      default:
+        return "hover:bg-gray-100 dark:hover:bg-gray-800";
+    }
+  };
+
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
@@ -132,18 +146,23 @@ const DashboardLayout = ({ children, userType }: DashboardLayoutProps) => {
 
         <div className="mt-6 px-4">
           <nav className="space-y-2">
-            {navItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.path}
-                className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
-                  index === 0 ? getActiveItemColorClass() : "hover:bg-gray-200 dark:hover:bg-gray-800"
-                }`}
-              >
-                <item.icon size={20} />
-                {isSidebarOpen && <span>{item.label}</span>}
-              </Link>
-            ))}
+            {navItems.map((item, index) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
+                    isActive 
+                      ? getActiveItemColorClass() 
+                      : getHoverColorClass()
+                  }`}
+                >
+                  <item.icon size={20} />
+                  {isSidebarOpen && <span>{item.label}</span>}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </aside>
