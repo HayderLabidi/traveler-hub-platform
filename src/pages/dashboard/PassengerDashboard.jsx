@@ -8,13 +8,31 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import NearbyDriversMap from "@/components/NearbyDriversMap";
-import { MapPin, Search, Filter, Star, Clock, ChevronDown, CarFront, MessageSquare } from "lucide-react";
+import { 
+  MapPin, 
+  Search, 
+  Star, 
+  Clock, 
+  CarFront, 
+  MessageSquare, 
+  User,
+  Calendar,
+  Bell,
+  Wallet,
+  History,
+  LogOut,
+  Home,
+  Map,
+  Menu
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { useToast } from "@/hooks/use-toast";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const PassengerDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [rides, setRides] = useState([
     { id: 1, from: "Home", to: "Work", date: "Today, 9:00 AM", status: "Scheduled" },
     { id: 2, from: "Work", to: "Gym", date: "Today, 5:30 PM", status: "Scheduled" },
@@ -152,13 +170,222 @@ const PassengerDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    setTimeout(() => {
+      navigate("/");
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out."
+      });
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
-      <main className="container mx-auto p-4 py-8 mt-16 flex-grow">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-3 space-y-6">
+      <main className="container mx-auto p-4 py-8 mt-16 flex-grow pb-24 md:pb-8">
+        {/* Mobile Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t md:hidden z-50">
+          <div className="flex justify-around items-center h-16">
+            <Button variant="ghost" size="icon" className="flex flex-col items-center">
+              <Home className="h-5 w-5" />
+              <span className="text-xs">Home</span>
+            </Button>
+            <Button variant="ghost" size="icon" className="flex flex-col items-center">
+              <Map className="h-5 w-5" />
+              <span className="text-xs">Map</span>
+            </Button>
+            <Button 
+              variant="default" 
+              size="icon" 
+              className="flex flex-col items-center -mt-6 bg-primary rounded-full h-12 w-12"
+              onClick={() => navigate("/book-ride")}
+            >
+              <CarFront className="h-6 w-6" />
+              <span className="text-xs">Book</span>
+            </Button>
+            <Button variant="ghost" size="icon" className="flex flex-col items-center">
+              <Bell className="h-5 w-5" />
+              <span className="text-xs">Alerts</span>
+            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="flex flex-col items-center">
+                  <Menu className="h-5 w-5" />
+                  <span className="text-xs">Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px]">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">John Passenger</h3>
+                      <p className="text-sm text-muted-foreground">Premium Member</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Schedule Ride
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <History className="h-4 w-4 mr-2" />
+                      My Rides
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <Wallet className="h-4 w-4 mr-2" />
+                      Payment
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <User className="h-4 w-4 mr-2" />
+                      My Profile
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Desktop Sidebar - Hidden on Mobile */}
+          <div className="hidden lg:block lg:col-span-1 space-y-6">
+            {/* User Profile Card */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">John Passenger</h3>
+                    <p className="text-sm text-muted-foreground">Premium Member</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Menu</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/book-ride")}
+                >
+                  <CarFront className="h-4 w-4 mr-2" />
+                  Book a Ride
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/passenger/schedule")}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Ride
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/passenger/history")}
+                >
+                  <History className="h-4 w-4 mr-2" />
+                  My Rides
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/payment-methods")}
+                >
+                  <Wallet className="h-4 w-4 mr-2" />
+                  Payment
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/passenger/profile")}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  My Profile
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Logout Button */}
+            <Button variant="outline" className="w-full" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Welcome Section - Hidden on Mobile */}
+            <Card className="hidden md:block">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-2xl font-bold">Welcome back, John!</h2>
+                    <p className="text-muted-foreground">Ready for your next ride?</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button variant="outline" size="icon">
+                      <Bell className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats - Hidden on Mobile */}
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Total Rides</p>
+                      <p className="text-2xl font-bold">25</p>
+                    </div>
+                    <History className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Upcoming Rides</p>
+                      <p className="text-2xl font-bold">3</p>
+                    </div>
+                    <Calendar className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Wallet Balance</p>
+                      <p className="text-2xl font-bold">$50.00</p>
+                    </div>
+                    <Wallet className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Find Drivers Section */}
             <Card>
               <CardHeader>
                 <CardTitle>Find Nearby Drivers</CardTitle>
@@ -216,25 +443,6 @@ const PassengerDashboard = () => {
                             <TabsTrigger value="grid">Grid View</TabsTrigger>
                             <TabsTrigger value="map">Map View</TabsTrigger>
                           </TabsList>
-                          
-                          <div className="flex items-center gap-2">
-                            <Label htmlFor="sort" className="text-sm">Sort by:</Label>
-                            <select 
-                              id="sort" 
-                              className="text-sm border rounded-md p-1"
-                              value={sortOption}
-                              onChange={(e) => setSortOption(e.target.value)}
-                            >
-                              <option value="distance">Distance</option>
-                              <option value="rating">Rating</option>
-                              <option value="price">Price</option>
-                            </select>
-                            
-                            <Button variant="outline" size="sm" className="ml-2">
-                              <Filter size={14} className="mr-1" />
-                              Filters
-                            </Button>
-                          </div>
                         </div>
                         
                         <TabsContent value="grid" className="w-full mt-0">
@@ -300,26 +508,6 @@ const PassengerDashboard = () => {
                               </Card>
                             ))}
                           </div>
-                          
-                          <Pagination className="mt-6">
-                            <PaginationContent>
-                              <PaginationItem>
-                                <PaginationPrevious href="#" />
-                              </PaginationItem>
-                              <PaginationItem>
-                                <PaginationLink href="#" isActive>1</PaginationLink>
-                              </PaginationItem>
-                              <PaginationItem>
-                                <PaginationLink href="#">2</PaginationLink>
-                              </PaginationItem>
-                              <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                              </PaginationItem>
-                              <PaginationItem>
-                                <PaginationNext href="#" />
-                              </PaginationItem>
-                            </PaginationContent>
-                          </Pagination>
                         </TabsContent>
                         
                         <TabsContent value="map" className="w-full mt-0">
@@ -330,35 +518,6 @@ const PassengerDashboard = () => {
                               radius={searchRadius}
                             />
                           </div>
-                          
-                          <div className="mt-4 space-y-3 border border-border rounded-lg p-4">
-                            <h3 className="text-sm font-medium">Available Drivers ({nearbyDrivers.length})</h3>
-                            <div className="max-h-[300px] overflow-y-auto space-y-2">
-                              {nearbyDrivers.map((driver) => (
-                                <div key={driver.id} className="flex items-center p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
-                                  <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                                    {driver.image && (
-                                      <img 
-                                        src={driver.image} 
-                                        alt={driver.name}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    )}
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-medium">{driver.name}</p>
-                                    <p className="text-sm text-muted-foreground">
-                                      <Star size={12} className="inline text-yellow-500" fill="currentColor" /> 
-                                      {driver.rating} • {driver.distance} • {driver.price}
-                                    </p>
-                                  </div>
-                                  <Button size="sm" onClick={() => navigate("/book-ride")}>
-                                    Book
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
                         </TabsContent>
                       </Tabs>
                     </div>
@@ -366,40 +525,35 @@ const PassengerDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
+            {/* Upcoming Rides */}
             <Card>
               <CardHeader>
-                <CardTitle>Book a Ride</CardTitle>
-                <CardDescription>Where would you like to go today?</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button className="w-full" onClick={() => navigate("/book-ride")}>Book Now</Button>
-                    <Button variant="outline" className="w-full" onClick={() => {
-                      navigate("/book-ride");
-                      // This would pre-select the schedule tab on the booking page
-                    }}>Schedule</Button>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Upcoming Rides</CardTitle>
+                    <CardDescription>Your scheduled trips</CardDescription>
                   </div>
+                  <Button variant="outline" onClick={() => navigate("/passenger/schedule")}>
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Schedule New
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming Rides</CardTitle>
-                <CardDescription>Your scheduled trips</CardDescription>
               </CardHeader>
               <CardContent>
                 {rides.length > 0 ? (
                   <div className="space-y-4">
                     {rides.map((ride) => (
-                      <div key={ride.id} className="border rounded-lg p-4 flex justify-between items-center">
+                      <div key={ride.id} className="border rounded-lg p-4 flex justify-between items-center hover:bg-accent/50 transition-colors">
                         <div>
                           <div className="font-medium">{ride.from} → {ride.to}</div>
                           <div className="text-sm text-muted-foreground">{ride.date}</div>
                         </div>
-                        <div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="outline" size="sm">
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Message
+                          </Button>
                           <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
                             {ride.status}
                           </span>

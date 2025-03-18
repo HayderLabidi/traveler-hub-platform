@@ -3,153 +3,231 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useNavigate } from "react-router-dom";
-import { Users, Car, ChevronRight, Settings, MessageSquare, CreditCard } from "lucide-react";
-import DashboardLayout from "@/components/DashboardLayout";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  Users, 
+  Car, 
+  Route, 
+  CreditCard, 
+  HelpCircle, 
+  Settings, 
+  LogOut,
+  UserPlus,
+  AlertCircle,
+  TrendingUp,
+  DollarSign,
+  Shield
+} from "lucide-react";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
 const AdminDashboard = () => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
-  
+  const { toast } = useToast();
+
   const [stats, setStats] = useState({
     totalUsers: 1250,
-    activeDrivers: 78,
-    totalRides: 3567,
-    pendingApprovals: 12
+    totalDrivers: 450,
+    activeRides: 85,
+    totalRevenue: 125000,
+    pendingApprovals: 12,
+    supportTickets: 8
   });
 
-  return (
-    <DashboardLayout userType="admin">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Users</p>
-                <p className="text-2xl font-bold">{stats.totalUsers}</p>
-              </div>
-              <Users className="h-8 w-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Active Drivers</p>
-                <p className="text-2xl font-bold">{stats.activeDrivers}</p>
-              </div>
-              <Car className="h-8 w-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Rides</p>
-                <p className="text-2xl font-bold">{stats.totalRides}</p>
-              </div>
-              <Car className="h-8 w-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Pending Approvals</p>
-                <p className="text-2xl font-bold">{stats.pendingApprovals}</p>
-              </div>
-              <Settings className="h-8 w-8 text-muted-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+  const handleLogout = () => {
+    // Simulate logout
+    setTimeout(() => {
+      navigate("/");
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out."
+      });
+    }, 1000);
+  };
 
-      <div className="grid grid-cols-1 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Driver Approvals</CardTitle>
-            <CardDescription>Pending driver registrations requiring approval</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[1, 2, 3].map((item) => (
-                <div key={item} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Driver #{item}</p>
-                    <p className="text-sm text-muted-foreground">Applied: {item} day{item !== 1 ? 's' : ''} ago</p>
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+
+      <main className="container mx-auto p-4 py-8 mt-16 flex-grow">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Quick Actions */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Quick Actions Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+                <CardDescription>Common administrative tasks</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/users")}
+                >
+                  <Users className="h-4 w-4 mr-2" /> Manage Users
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/drivers")}
+                >
+                  <Car className="h-4 w-4 mr-2" /> Manage Drivers
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/rides")}
+                >
+                  <Route className="h-4 w-4 mr-2" /> Manage Rides
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/payments")}
+                >
+                  <CreditCard className="h-4 w-4 mr-2" /> Manage Payments
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/support")}
+                >
+                  <HelpCircle className="h-4 w-4 mr-2" /> Support Tickets
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate("/admin/settings")}
+                >
+                  <Settings className="h-4 w-4 mr-2" /> System Settings
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Logout Button */}
+            <Button variant="destructive" className="w-full" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" /> Logout
+            </Button>
+          </div>
+
+          {/* Middle Column - Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Statistics Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                      <p className="text-2xl font-bold">{stats.totalUsers}</p>
+                    </div>
+                    <Users className="h-8 w-8 text-primary" />
                   </div>
-                  <Button size="sm">
-                    Review
-                  </Button>
-                </div>
-              ))}
-              <Button variant="outline" className="w-full" onClick={() => navigate("/admin/drivers")}>
-                View All Pending Approvals
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest actions on the platform</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { action: "New user registration", time: "10 minutes ago" },
-                { action: "Driver approved", time: "1 hour ago" },
-                { action: "Payment processed", time: "3 hours ago" },
-                { action: "Ride completed", time: "6 hours ago" }
-              ].map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">{activity.action}</p>
-                    <p className="text-sm text-muted-foreground">{activity.time}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Total Drivers</p>
+                      <p className="text-2xl font-bold">{stats.totalDrivers}</p>
+                    </div>
+                    <Car className="h-8 w-8 text-primary" />
                   </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Active Rides</p>
+                      <p className="text-2xl font-bold">{stats.activeRides}</p>
+                    </div>
+                    <Route className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                      <p className="text-2xl font-bold">${stats.totalRevenue}</p>
+                    </div>
+                    <DollarSign className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Pending Approvals</p>
+                      <p className="text-2xl font-bold">{stats.pendingApprovals}</p>
+                    </div>
+                    <AlertCircle className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-muted-foreground">Support Tickets</p>
+                      <p className="text-2xl font-bold">{stats.supportTickets}</p>
+                    </div>
+                    <HelpCircle className="h-8 w-8 text-primary" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest actions and updates</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2 bg-primary/10 rounded-full">
+                      <UserPlus className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">New Driver Registration</p>
+                      <p className="text-sm text-muted-foreground">John Doe registered as a driver</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2 bg-primary/10 rounded-full">
+                      <TrendingUp className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Revenue Update</p>
+                      <p className="text-sm text-muted-foreground">Daily revenue reached $5,000</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2 bg-primary/10 rounded-full">
+                      <Shield className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Security Alert</p>
+                      <p className="text-sm text-muted-foreground">Multiple failed login attempts detected</p>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>System Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span>API Status</span>
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                  Operational
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Database</span>
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                  Operational
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Payment Gateway</span>
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                  Operational
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </DashboardLayout>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 
