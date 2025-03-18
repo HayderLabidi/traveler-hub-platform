@@ -22,6 +22,14 @@ import EditProfile from "./pages/dashboard/EditProfile";
 import PaymentMethods from "./pages/dashboard/PaymentMethods";
 import BookRide from "./pages/passenger/BookRide";
 
+// Admin pages
+import Users from "./pages/admin/Users";
+import Drivers from "./pages/admin/Drivers";
+import Rides from "./pages/admin/Rides";
+import Payments from "./pages/admin/Payments";
+import Support from "./pages/admin/Support";
+import Settings from "./pages/admin/Settings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -47,6 +55,15 @@ const App = () => (
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/payment-methods" element={<PaymentMethods />} />
             <Route path="/book-ride" element={<BookRide />} />
+            
+            {/* Admin routes */}
+            <Route path="/admin/users" element={<Users />} />
+            <Route path="/admin/drivers" element={<Drivers />} />
+            <Route path="/admin/rides" element={<Rides />} />
+            <Route path="/admin/payments" element={<Payments />} />
+            <Route path="/admin/support" element={<Support />} />
+            <Route path="/admin/settings" element={<Settings />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
