@@ -18,6 +18,7 @@ import {
   Moon
 } from "lucide-react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -29,9 +30,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 
-const DashboardLayout = ({ children, userType }) => {
+const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -63,22 +65,18 @@ const DashboardLayout = ({ children, userType }) => {
     { label: "Settings", icon: Settings, path: "/admin/settings" },
   ];
 
-  const navItems = userType === "passenger" 
+  const navItems = user?.type === "passenger" 
     ? passengerNavItems 
-    : userType === "driver" 
+    : user?.type === "driver" 
       ? driverNavItems 
       : adminNavItems;
 
   const handleLogout = () => {
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
-    });
-    navigate("/");
+    logout();
   };
 
   const getSidebarColorClass = () => {
-    switch (userType) {
+    switch (user?.type) {
       case "passenger":
         return "bg-blue-50 dark:bg-blue-950/20";
       case "driver":
@@ -91,7 +89,7 @@ const DashboardLayout = ({ children, userType }) => {
   };
 
   const getActiveItemColorClass = () => {
-    switch (userType) {
+    switch (user?.type) {
       case "passenger":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
       case "driver":
@@ -104,7 +102,7 @@ const DashboardLayout = ({ children, userType }) => {
   };
 
   const getHoverColorClass = () => {
-    switch (userType) {
+    switch (user?.type) {
       case "passenger":
         return "hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-blue-900/10 dark:hover:text-blue-300";
       case "driver":
@@ -191,25 +189,25 @@ const DashboardLayout = ({ children, userType }) => {
                   <Avatar>
                     <AvatarImage src="/placeholder.svg" />
                     <AvatarFallback>
-                      {userType === "passenger" ? "P" : userType === "driver" ? "D" : "A"}
+                      {user?.type === "passenger" ? "P" : user?.type === "driver" ? "D" : "A"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden md:block text-left">
                     <p className="text-sm font-medium">
-                      {userType === "passenger" ? "John Smith" : userType === "driver" ? "David Johnson" : "Admin User"}
+                      {user?.type === "passenger" ? "John Smith" : user?.type === "driver" ? "David Johnson" : "Admin User"}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{userType}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.type}</p>
                   </div>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate(`/${userType}/profile`)}>
+                <DropdownMenuItem onClick={() => navigate(`/${user?.type}/profile`)}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate(`/${userType}/settings`)}>
+                <DropdownMenuItem onClick={() => navigate(`/${user?.type}/settings`)}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>

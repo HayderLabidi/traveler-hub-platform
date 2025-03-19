@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/providers/AuthProvider";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ const Login = () => {
   const [userType, setUserType] = useState("passenger");
   const [isLoading, setIsLoading] = useState(false);
   
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e) => {
@@ -34,23 +36,8 @@ const Login = () => {
         return;
       }
       
-      // Redirect based on user type
-      switch (userType) {
-        case "passenger":
-          navigate("/passenger/dashboard");
-          break;
-        case "driver":
-          navigate("/driver/dashboard");
-          break;
-        case "admin":
-          navigate("/admin/dashboard");
-          break;
-      }
-      
-      toast({
-        title: "Success!",
-        description: `You've successfully logged in as a ${userType}`,
-      });
+      // Use the auth context to handle login
+      login(email, userType);
     }, 1000);
   };
 
@@ -78,6 +65,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -94,10 +82,18 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Spinner size="sm" />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </Button>
             <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
               Don't have an account?{" "}
@@ -119,6 +115,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -135,10 +132,18 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Spinner size="sm" />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </Button>
             <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
               Don't have an account?{" "}
@@ -160,6 +165,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -176,10 +182,18 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Spinner size="sm" />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </form>
         </TabsContent>

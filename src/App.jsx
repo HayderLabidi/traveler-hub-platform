@@ -2,8 +2,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DarkModeProvider } from "@/providers/DarkModeProvider";
+import { AuthProvider, useAuth } from "@/providers/AuthProvider";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
 
 // Public pages
@@ -39,57 +40,138 @@ import AdminSettings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
+// Protected Route wrapper component
+const ProtectedRoute = ({ children, allowedUserTypes }) => {
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  if (allowedUserTypes && !allowedUserTypes.includes(user?.type)) {
+    return <Navigate to="/" />;
+  }
+  
+  return children;
+};
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Index />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/faq" element={<FAQ />} />
+
+      {/* Auth routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<PassengerRegister />} />
+      <Route path="/driver/register" element={<DriverRegister />} />
+      <Route path="/passenger/register" element={<PassengerRegister />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      {/* Protected Driver routes */}
+      <Route path="/driver/dashboard" element={
+        <ProtectedRoute allowedUserTypes={['driver']}>
+          <DriverDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/driver/profile" element={
+        <ProtectedRoute allowedUserTypes={['driver']}>
+          <Profile />
+        </ProtectedRoute>
+      } />
+      <Route path="/driver/settings" element={
+        <ProtectedRoute allowedUserTypes={['driver']}>
+          <Settings />
+        </ProtectedRoute>
+      } />
+
+      {/* Protected Passenger routes */}
+      <Route path="/passenger/dashboard" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <PassengerDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/passenger/profile" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <PassengerProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/book-ride" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <BookRide />
+        </ProtectedRoute>
+      } />
+
+      {/* Shared protected routes */}
+      <Route path="/payment-methods" element={
+        <ProtectedRoute allowedUserTypes={['passenger', 'driver']}>
+          <PaymentMethods />
+        </ProtectedRoute>
+      } />
+
+      {/* Protected Admin routes */}
+      <Route path="/admin/dashboard" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/users" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <Users />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/drivers" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <Drivers />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/rides" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <Rides />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/payments" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <Payments />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/support" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <Support />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/settings" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <AdminSettings />
+        </ProtectedRoute>
+      } />
+      
+      {/* Catch-all route */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <DarkModeProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-
-            {/* Auth routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<PassengerRegister />} />
-            <Route path="/driver/register" element={<DriverRegister />} />
-            <Route path="/passenger/register" element={<PassengerRegister />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-
-            {/* Driver routes */}
-            <Route path="/driver/dashboard" element={<DriverDashboard />} />
-            <Route path="/driver/profile" element={<Profile />} />
-            <Route path="/driver/settings" element={<Settings />} />
-
-            {/* Passenger routes */}
-            <Route path="/passenger/dashboard" element={<PassengerDashboard />} />
-            <Route path="/passenger/profile" element={<PassengerProfile />} />
-            <Route path="/book-ride" element={<BookRide />} />
-
-            {/* Shared routes */}
-            <Route path="/payment-methods" element={<PaymentMethods />} />
-
-            {/* Admin routes */}
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<Users />} />
-            <Route path="/admin/drivers" element={<Drivers />} />
-            <Route path="/admin/rides" element={<Rides />} />
-            <Route path="/admin/payments" element={<Payments />} />
-            <Route path="/admin/support" element={<Support />} />
-            <Route path="/admin/settings" element={<AdminSettings />} />
-            
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatbotButton />
-        </BrowserRouter>
-      </TooltipProvider>
-    </DarkModeProvider>
-  </QueryClientProvider>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <DarkModeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <div className="min-h-screen bg-background">
+              <AppRoutes />
+              <Toaster />
+              <Sonner />
+              <ChatbotButton />
+            </div>
+          </TooltipProvider>
+        </AuthProvider>
+      </DarkModeProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
 );
 
 export default App; 

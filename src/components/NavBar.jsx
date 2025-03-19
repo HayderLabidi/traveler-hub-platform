@@ -2,27 +2,35 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun, LogOut } from "lucide-react";
+import { useAuth } from "@/providers/AuthProvider";
 
 const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Check if user is on a dashboard page or authenticated page
-  const isAuthenticated = location.pathname.includes('/dashboard') || 
-                          location.pathname.includes('/profile') ||
-                          location.pathname.includes('/settings') ||
-                          location.pathname.includes('/bookings') ||
-                          location.pathname.includes('/rides') ||
-                          location.pathname.includes('/earnings');
+  const { user, isAuthenticated, logout } = useAuth();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleLogout = () => {
-    // For now just redirect to home, in a real app would handle auth logout
-    navigate("/");
+    logout();
+    setIsMenuOpen(false);
+  };
+
+  const getDashboardLink = () => {
+    if (!user) return "/login";
+    switch (user.type) {
+      case "passenger":
+        return "/passenger/dashboard";
+      case "driver":
+        return "/driver/dashboard";
+      case "admin":
+        return "/admin/dashboard";
+      default:
+        return "/";
+    }
   };
 
   return (
@@ -30,7 +38,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link to={isAuthenticated ? getDashboardLink() : "/"} className="flex items-center">
               <span className="text-2xl font-bold text-brand-500">RideShare</span>
             </Link>
           </div>
