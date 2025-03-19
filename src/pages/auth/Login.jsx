@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/providers/AuthProvider";
-import { Spinner } from "@/components/ui/spinner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -38,7 +38,7 @@ const Login = () => {
       
       // Use the auth context to handle login
       login(email, userType);
-    }, 1000);
+    }, 2000); // Increased to 2 seconds to show loading state
   };
 
   return (
@@ -87,8 +87,8 @@ const Login = () => {
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <Spinner size="sm" />
+                <div className="flex items-center justify-center space-x-2">
+                  <LoadingSpinner size="sm" />
                   <span>Signing in...</span>
                 </div>
               ) : (
@@ -137,8 +137,8 @@ const Login = () => {
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <Spinner size="sm" />
+                <div className="flex items-center justify-center space-x-2">
+                  <LoadingSpinner size="sm" />
                   <span>Signing in...</span>
                 </div>
               ) : (
@@ -187,8 +187,8 @@ const Login = () => {
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                <div className="flex items-center space-x-2">
-                  <Spinner size="sm" />
+                <div className="flex items-center justify-center space-x-2">
+                  <LoadingSpinner size="sm" />
                   <span>Signing in...</span>
                 </div>
               ) : (

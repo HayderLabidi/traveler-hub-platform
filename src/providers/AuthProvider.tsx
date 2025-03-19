@@ -1,7 +1,6 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { LoadingScreen } from '@/components/LoadingScreen';
 
 type UserType = 'passenger' | 'driver' | 'admin' | null;
 
@@ -74,9 +73,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // If still loading, show loading screen
+  // If still loading, show nothing
   if (isLoading) {
-    return <LoadingScreen />;
+    return null;
   }
 
   return (
