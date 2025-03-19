@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,9 @@ import Settings from "./pages/dashboard/Settings";
 import PaymentMethods from "./pages/dashboard/PaymentMethods";
 import BookRide from "./pages/passenger/BookRide";
 import PassengerProfile from "./pages/dashboard/PassengerProfile";
+import ScheduleRide from "./pages/passenger/ScheduleRide";
+import Blog from "./pages/passenger/Blog";
+import HelpCentre from "./pages/passenger/HelpCentre";
 
 // Admin pages
 import Users from "./pages/admin/Users";
@@ -98,6 +102,21 @@ const AppRoutes = () => {
       <Route path="/passenger/profile" element={
         <ProtectedRoute allowedUserTypes={['passenger']}>
           <PassengerProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/passenger/schedule" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <ScheduleRide />
+        </ProtectedRoute>
+      } />
+      <Route path="/passenger/blog" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <Blog />
+        </ProtectedRoute>
+      } />
+      <Route path="/passenger/help" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <HelpCentre />
         </ProtectedRoute>
       } />
       <Route path="/book-ride" element={
@@ -176,4 +195,4 @@ const App = () => (
   </BrowserRouter>
 );
 
-export default App; 
+export default App;

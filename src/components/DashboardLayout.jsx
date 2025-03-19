@@ -15,7 +15,10 @@ import {
   Car, 
   Star,
   Sun,
-  Moon
+  Moon,
+  BellRing,
+  FileText,
+  HelpCircle
 } from "lucide-react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useAuth } from "@/providers/AuthProvider";
@@ -29,6 +32,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -37,14 +46,24 @@ const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "New ride offer", message: "Driver Michael is nearby", time: "5 min ago", read: false },
+    { id: 2, title: "Ride confirmed", message: "Your ride to Airport is confirmed", time: "1 hour ago", read: false },
+    { id: 3, title: "Payment processed", message: "Your payment of $25 was successful", time: "Yesterday", read: true },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   const passengerNavItems = [
     { label: "Dashboard", icon: Home, path: "/passenger/dashboard" },
     { label: "Find Ride", icon: Car, path: "/passenger/find-ride" },
+    { label: "Schedule Ride", icon: Calendar, path: "/passenger/schedule" },
     { label: "My Bookings", icon: Calendar, path: "/passenger/bookings" },
     { label: "Payment", icon: CreditCard, path: "/passenger/payment" },
     { label: "Messages", icon: MessageSquare, path: "/passenger/messages" },
     { label: "Reviews", icon: Star, path: "/passenger/reviews" },
+    { label: "Blog", icon: FileText, path: "/passenger/blog" },
+    { label: "Help Centre", icon: HelpCircle, path: "/passenger/help" },
   ];
 
   const driverNavItems = [
@@ -73,6 +92,20 @@ const DashboardLayout = ({ children }) => {
 
   const handleLogout = () => {
     logout();
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+    toast({
+      title: "Notifications",
+      description: "All notifications marked as read"
+    });
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ));
   };
 
   const getSidebarColorClass = () => {
@@ -116,7 +149,6 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <aside
         className={`${getSidebarColorClass()} border-r border-gray-200 dark:border-gray-800 fixed inset-y-0 z-50 transition-all duration-300 ${
           isSidebarOpen ? "w-64" : "w-0 md:w-16"
@@ -159,9 +191,7 @@ const DashboardLayout = ({ children }) => {
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col bg-white dark:bg-gray-950 min-h-screen overflow-hidden">
-        {/* Top navbar */}
         <header className="h-16 border-b border-gray-200 dark:border-gray-800 px-4 flex items-center justify-between bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm sticky top-0 z-30">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -173,15 +203,63 @@ const DashboardLayout = ({ children }) => {
           <div className="flex-1" />
 
           <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              onClick={() => toast({ title: "Notifications", description: "You have no new notifications" })}
-            >
-              <Bell size={20} />
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                >
+                  {unreadCount > 0 ? <BellRing size={20} /> : <Bell size={20} />}
+                  {unreadCount > 0 && (
+                    <Badge 
+                      className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-0">
+                <div className="p-4 border-b border-border flex justify-between items-center">
+                  <h4 className="font-medium">Notifications</h4>
+                  {unreadCount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={markAllAsRead}>
+                      Mark all as read
+                    </Button>
+                  )}
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    <div className="divide-y divide-border">
+                      {notifications.map((notification) => (
+                        <div 
+                          key={notification.id} 
+                          className={`p-4 hover:bg-muted cursor-pointer flex items-start ${notification.read ? 'opacity-70' : 'bg-muted/50'}`}
+                          onClick={() => markAsRead(notification.id)}
+                        >
+                          <div className="w-2 h-2 mt-1.5 rounded-full mr-3 flex-shrink-0 bg-primary" style={{ opacity: notification.read ? 0 : 1 }} />
+                          <div className="flex-1">
+                            <div className="font-medium mb-0.5">{notification.title}</div>
+                            <p className="text-sm text-muted-foreground mb-1">{notification.message}</p>
+                            <span className="text-xs text-muted-foreground">{notification.time}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-8 text-center text-muted-foreground">
+                      No notifications
+                    </div>
+                  )}
+                </div>
+                <div className="p-2 border-t border-border">
+                  <Button variant="ghost" size="sm" className="w-full">
+                    View all notifications
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -234,7 +312,6 @@ const DashboardLayout = ({ children }) => {
           </div>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
           {children}
         </main>
@@ -243,4 +320,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout; 
+export default DashboardLayout;
