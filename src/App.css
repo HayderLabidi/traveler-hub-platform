@@ -1,10 +1,12 @@
+
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
+/* Keep existing logo styles */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -18,6 +20,7 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Keep existing animation keyframes */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -39,4 +42,21 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* New 3D element styles */
+canvas {
+  touch-action: none;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fix for Three.js canvas in dark mode */
+.dark canvas {
+  filter: brightness(1.1);
 }

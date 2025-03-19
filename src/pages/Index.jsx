@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Car, Users, Clock, Shield, Mail } from "lucide-react";
@@ -6,6 +7,9 @@ import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
+import CarModel from "@/components/3D/CarModel";
+import FloatingElements from "@/components/3D/FloatingElements";
+import { Suspense } from "react";
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -39,10 +43,11 @@ const Index = () => {
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 hero-gradient">
+      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 hero-gradient relative overflow-hidden">
+        <FloatingElements className="opacity-40" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-white animate-fade-in">
+            <div className="text-white animate-fade-in relative z-10">
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
                 Share the ride, <br /> share the cost
               </h1>
@@ -67,12 +72,10 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="/Carpool.gif" 
-                alt="People carpooling" 
-                className="w-full h-[400px] object-cover" 
-              />
+            <div className="lg:block rounded-xl overflow-hidden shadow-xl relative z-10">
+              <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-xl"></div>}>
+                <CarModel />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -102,6 +105,29 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3D Interactive Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-4">Experience RideShare in 3D</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Interact with our 3D model to get a feel for the RideShare experience.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-xl"></div>}>
+              <CarModel className="h-[500px]" />
+            </Suspense>
+            <div className="p-6 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Drag to rotate • Pinch or scroll to zoom
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -165,10 +191,9 @@ const Index = () => {
       
       <Footer />
       
-      {/* Add the ChatbotButton component */}
       <ChatbotButton />
     </div>
   );
 };
 
-export default Index; 
+export default Index;
