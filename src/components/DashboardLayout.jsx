@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,8 @@ import {
   Moon,
   BellRing,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Check
 } from "lucide-react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useAuth } from "@/providers/AuthProvider";
@@ -224,7 +226,8 @@ const DashboardLayout = ({ children }) => {
                 <div className="p-4 border-b border-border flex justify-between items-center">
                   <h4 className="font-medium">Notifications</h4>
                   {unreadCount > 0 && (
-                    <Button variant="ghost" size="sm" onClick={markAllAsRead}>
+                    <Button variant="ghost" size="sm" onClick={markAllAsRead} className="flex items-center">
+                      <Check className="h-4 w-4 mr-1" />
                       Mark all as read
                     </Button>
                   )}
