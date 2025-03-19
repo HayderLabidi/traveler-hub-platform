@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -183,10 +182,12 @@ const App = () => (
           <TooltipProvider>
             <div className="min-h-screen bg-background">
               <LoadingPage />
-              <AppRoutes />
-              <Toaster />
-              <Sonner />
-              <ChatbotButton />
+              <div className="relative">
+                <AppRoutes />
+                <Toaster />
+                <Sonner />
+                <ChatbotButton />
+              </div>
             </div>
           </TooltipProvider>
         </AuthProvider>

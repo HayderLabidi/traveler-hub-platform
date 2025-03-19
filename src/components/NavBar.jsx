@@ -1,14 +1,23 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Moon, Sun, LogOut } from "lucide-react";
+import { Menu, X, Moon, Sun, LogOut, User, Home, Settings } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -38,7 +47,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to={isAuthenticated ? getDashboardLink() : "/"} className="flex items-center">
+            <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-brand-500">RideShare</span>
             </Link>
           </div>
@@ -69,18 +78,47 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                 </>
               ) : (
                 <>
+                  {user.type === "admin" && (
+                    <Link to="/" className="nav-link flex items-center">
+                      <Home className="w-4 h-4 mr-1" />
+                      Frontend
+                    </Link>
+                  )}
                   <Link to="/faq" className="nav-link">FAQ</Link>
                   <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   </button>
-                  <Button 
-                    variant="outline" 
-                    onClick={handleLogout}
-                    className="flex items-center space-x-2"
-                  >
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/avatars/01.png" alt={user.email} />
+                          <AvatarFallback>{user.email[0].toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate(getDashboardLink())}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(`/${user.type}/profile`)}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(`/${user.type}/settings`)}>
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </>
               )}
             </div>
@@ -132,7 +170,46 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
               </>
             ) : (
               <>
+                {user.type === "admin" && (
+                  <Link to="/" className="block nav-link flex items-center">
+                    <Home className="w-4 h-4 mr-1" />
+                    Frontend
+                  </Link>
+                )}
                 <Link to="/faq" className="block nav-link">FAQ</Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => {
+                    navigate(getDashboardLink());
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => {
+                    navigate(`/${user.type}/profile`);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => {
+                    navigate(`/${user.type}/settings`);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </Button>
                 <Button 
                   variant="outline" 
                   className="w-full mt-2"
@@ -141,7 +218,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                     setIsMenuOpen(false);
                   }}
                 >
-                  <LogOut size={16} className="mr-2" />
+                  <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </Button>
               </>
