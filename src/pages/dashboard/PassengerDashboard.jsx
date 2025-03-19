@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -150,6 +151,14 @@ const PassengerDashboard = () => {
     minSeats: 1
   });
   
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "New ride offer", message: "Driver Michael is nearby", time: "5 min ago", read: false },
+    { id: 2, title: "Ride confirmed", message: "Your ride to Airport is confirmed", time: "1 hour ago", read: false },
+    { id: 3, title: "Payment processed", message: "Your payment of $25 was successful", time: "Yesterday", read: true },
+  ]);
+  
+  const unreadCount = notifications.filter(n => !n.read).length;
+  
   const handleLocationSearch = () => {
     setShowDriversMap(true);
   };
@@ -179,6 +188,20 @@ const PassengerDashboard = () => {
       });
     }, 1000);
   };
+  
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+    toast({
+      title: "Notifications",
+      description: "All notifications marked as read"
+    });
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ));
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -205,8 +228,17 @@ const PassengerDashboard = () => {
               <CarFront className="h-6 w-6" />
               <span className="text-xs">Book</span>
             </Button>
-            <Button variant="ghost" size="icon" className="flex flex-col items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="flex flex-col items-center relative"
+            >
               <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
               <span className="text-xs">Alerts</span>
             </Button>
             <Sheet>
@@ -228,10 +260,6 @@ const PassengerDashboard = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Schedule Ride
-                    </Button>
                     <Button variant="outline" className="w-full justify-start">
                       <History className="h-4 w-4 mr-2" />
                       My Rides
@@ -290,14 +318,6 @@ const PassengerDashboard = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => navigate("/passenger/schedule")}
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Schedule Ride
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
                   onClick={() => navigate("/passenger/history")}
                 >
                   <History className="h-4 w-4 mr-2" />
@@ -340,9 +360,49 @@ const PassengerDashboard = () => {
                     <p className="text-muted-foreground">Ready for your next ride?</p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="icon">
-                      <Bell className="h-4 w-4" />
-                    </Button>
+                    <div className="relative">
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="relative"
+                        onClick={() => markAllAsRead()}
+                      >
+                        <Bell className="h-4 w-4" />
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                            {unreadCount}
+                          </span>
+                        )}
+                      </Button>
+                      
+                      {/* Notifications dropdown */}
+                      <div className="absolute right-0 mt-2 w-80 bg-background border border-border rounded-md shadow-lg z-10 hidden group-hover:block">
+                        <div className="p-4 border-b border-border">
+                          <h4 className="font-medium">Notifications</h4>
+                        </div>
+                        <div className="max-h-80 overflow-y-auto">
+                          {notifications.length > 0 ? (
+                            <div className="divide-y divide-border">
+                              {notifications.map((notification) => (
+                                <div 
+                                  key={notification.id} 
+                                  className={`p-4 hover:bg-muted cursor-pointer ${notification.read ? 'opacity-70' : 'bg-muted/50'}`}
+                                  onClick={() => markAsRead(notification.id)}
+                                >
+                                  <div className="font-medium mb-0.5">{notification.title}</div>
+                                  <p className="text-sm text-muted-foreground mb-1">{notification.message}</p>
+                                  <span className="text-xs text-muted-foreground">{notification.time}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="py-8 text-center text-muted-foreground">
+                              No notifications
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -534,9 +594,9 @@ const PassengerDashboard = () => {
                     <CardTitle>Upcoming Rides</CardTitle>
                     <CardDescription>Your scheduled trips</CardDescription>
                   </div>
-                  <Button variant="outline" onClick={() => navigate("/passenger/schedule")}>
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Schedule New
+                  <Button variant="outline" onClick={() => navigate("/book-ride")}>
+                    <CarFront className="h-4 w-4 mr-2" />
+                    Book New
                   </Button>
                 </div>
               </CardHeader>
