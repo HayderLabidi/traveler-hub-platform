@@ -82,3 +82,23 @@ canvas {
 .floating-delay-3 {
   animation-delay: -3s;
 }
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Remove overflow-hidden on certain containers that might crop 3D elements */
+.no-overflow-3d {
+  overflow: visible !important;
+}

@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PresentationControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, PresentationControls } from '@react-three/drei';
 
 // Simple Car model component
 function Car(props) {
@@ -26,7 +26,7 @@ function Car(props) {
         </mesh>
         {/* Wheels */}
         <mesh position={[1, -0.4, 1]} castShadow>
-          <cylinderGeometry args={[0.4, 0.4, 0.2, 32]} rotation={[Math.PI / 2, 0, 0]} />
+          <cylinderGeometry args={[0.4, 0.4, 0.2, 32]} />
           <meshStandardMaterial color="#333" />
         </mesh>
         <mesh position={[-1, -0.4, 1]} castShadow>
@@ -87,7 +87,7 @@ export default function Car3DModel() {
     <Canvas
       shadows
       camera={{ position: [5, 3, 5], fov: 50 }}
-      className="w-full h-[400px] rounded-xl overflow-hidden bg-opacity-0"
+      style={{ width: '100%', height: '400px', borderRadius: '0.75rem', overflow: 'hidden', backgroundColor: 'transparent' }}
     >
       <color attach="background" args={['transparent']} />
       <ambientLight intensity={0.5} />

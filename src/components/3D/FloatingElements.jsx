@@ -54,7 +54,7 @@ export default function FloatingElements({ height = 200 }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 50 }}
-      className={`w-full h-[${height}px] absolute inset-0 z-0 pointer-events-none`}
+      style={{ width: '100%', height: `${height}px`, position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
     >
       <color attach="background" args={['transparent']} />
       <ambientLight intensity={0.5} />
