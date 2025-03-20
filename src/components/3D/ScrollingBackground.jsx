@@ -68,13 +68,28 @@ function ScrollingShapes({ scrollY }) {
 }
 
 function ScrollTracker({ onScroll }) {
+  const scrolling = useRef(false);
+  const frame = useRef(0);
+  
   useEffect(() => {
     const handleScroll = () => {
-      onScroll(window.scrollY);
+      if (!scrolling.current) {
+        scrolling.current = true;
+        
+        // Use requestAnimationFrame to limit scroll event processing
+        cancelAnimationFrame(frame.current);
+        frame.current = requestAnimationFrame(() => {
+          onScroll(window.scrollY);
+          scrolling.current = false;
+        });
+      }
     };
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame.current);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [onScroll]);
   
   return null;
@@ -82,6 +97,19 @@ function ScrollTracker({ onScroll }) {
 
 export default function ScrollingBackground() {
   const [scrollY, setScrollY] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  
+  // Only mount the Canvas after component is fully mounted
+  useEffect(() => {
+    setMounted(true);
+    
+    // Cleanup function to help prevent memory leaks
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+  
+  if (!mounted) return null;
   
   return (
     <>
@@ -97,6 +125,8 @@ export default function ScrollingBackground() {
           pointerEvents: 'none',
           zIndex: -1 
         }}
+        dpr={[1, 2]} // Limit pixel ratio for better performance
+        performance={{ min: 0.1 }} // Lower performance for better FPS
       >
         <color attach="background" args={['transparent']} />
         <ambientLight intensity={0.5} />
