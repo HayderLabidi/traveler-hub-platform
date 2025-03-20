@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +40,45 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* 3D Component Styles */
+canvas {
+  touch-action: none;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+.floating-delay-1 {
+  animation-delay: -1s;
+}
+
+.floating-delay-2 {
+  animation-delay: -2s;
+}
+
+.floating-delay-3 {
+  animation-delay: -3s;
 }

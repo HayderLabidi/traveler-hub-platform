@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Car, Users, Clock, Shield, Mail } from "lucide-react";
@@ -6,6 +7,8 @@ import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
+import Car3DModel from "@/components/3D/Car3DModel";
+import FloatingElements from "@/components/3D/FloatingElements";
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -38,11 +41,14 @@ const Index = () => {
     <div className="flex flex-col min-h-screen">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
-      {/* Hero Section */}
-      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 hero-gradient">
+      {/* Hero Section with 3D Car */}
+      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 hero-gradient relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <FloatingElements height={600} />
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-white animate-fade-in">
+            <div className="text-white animate-fade-in relative z-10">
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
                 Share the ride, <br /> share the cost
               </h1>
@@ -68,19 +74,21 @@ const Index = () => {
               </div>
             </div>
             <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="/Carpool.gif" 
-                alt="People carpooling" 
-                className="w-full h-[400px] object-cover" 
-              />
+              {/* Replace static image with 3D car model */}
+              <div className="w-full h-[400px] relative">
+                <Car3DModel />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 relative">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <FloatingElements height={500} />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -107,8 +115,11 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gray-100 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-gray-100 dark:bg-gray-900 relative">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <FloatingElements height={300} />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -171,4 +182,4 @@ const Index = () => {
   );
 };
 
-export default Index; 
+export default Index;
