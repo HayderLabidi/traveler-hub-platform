@@ -1,19 +1,24 @@
+
 import { Link } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
+import ScrollingBackground from "@/components/3D/ScrollingBackground";
 
 const About = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Add 3D scrolling background */}
+      <ScrollingBackground />
+      
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
-      <div className="pt-24 pb-16 px-4 md:px-6 max-w-7xl mx-auto">
+      <div className="pt-24 pb-16 px-4 md:px-6 max-w-7xl mx-auto relative z-10">
         <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">About RideShare</h1>
         
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-card rounded-lg p-6 shadow-md">
+          <div className="bg-card rounded-lg p-6 shadow-md backdrop-blur-sm bg-opacity-80">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="mb-4">
               At RideShare, our mission is to provide safe, convenient, and affordable transportation 
@@ -26,7 +31,7 @@ const About = () => {
             </p>
           </div>
           
-          <div className="bg-card rounded-lg p-6 shadow-md">
+          <div className="bg-card rounded-lg p-6 shadow-md backdrop-blur-sm bg-opacity-80">
             <h2 className="text-2xl font-semibold mb-4">Our Story</h2>
             <p className="mb-4">
               RideShare was founded in 2023 by a team of transportation enthusiasts who saw the 
@@ -40,7 +45,7 @@ const About = () => {
           </div>
         </div>
         
-        <div className="bg-card rounded-lg p-6 shadow-md mb-12">
+        <div className="bg-card rounded-lg p-6 shadow-md mb-12 backdrop-blur-sm bg-opacity-80">
           <h2 className="text-2xl font-semibold mb-4">Our Values</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 border border-border rounded-md">
@@ -84,4 +89,4 @@ const About = () => {
   );
 };
 
-export default About; 
+export default About;

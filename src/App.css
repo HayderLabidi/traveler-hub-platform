@@ -1,4 +1,3 @@
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -101,4 +100,31 @@ canvas {
 /* Remove overflow-hidden on certain containers that might crop 3D elements */
 .no-overflow-3d {
   overflow: visible !important;
+}
+
+/* Scrolling background styles */
+.scroll-scene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Add some glass morphism effect to cards */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+/* Add some depth to scrolling content */
+.scroll-content {
+  position: relative;
+  z-index: 10;
+  transition: transform 0.2s ease-out;
+}
+
+.scroll-content:hover {
+  transform: translateY(-5px);
 }
