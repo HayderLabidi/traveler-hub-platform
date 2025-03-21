@@ -76,11 +76,7 @@ const DashboardLayout = ({ children }) => {
     { label: "Earnings", icon: CreditCard, path: "/driver/earnings" },
     { label: "Messages", icon: MessageSquare, path: "/driver/messages" },
     { label: "Reviews", icon: Star, path: "/driver/reviews" },
-    {
-      title: "Verification",
-      href: "/driver/verification",
-      icon: ShieldCheck,
-    },
+    { label: "Verification", icon: ShieldCheck, path: "/driver/verification" },
   ];
 
   const adminNavItems = [
