@@ -1,98 +1,65 @@
 
-import React, { useRef, useState, useEffect } from 'react';
-import Spline from '@splinetool/react-spline';
-import { Sparkles } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+
+function FloatingShapes() {
+  const ref1 = useRef();
+  const ref2 = useRef();
+  const ref3 = useRef();
+  const ref4 = useRef();
+  
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    if (ref1.current) {
+      ref1.current.position.y = Math.sin(t * 0.5) * 0.5 + 0.5;
+      ref1.current.rotation.y += 0.01;
+    }
+    if (ref2.current) {
+      ref2.current.position.y = Math.sin(t * 0.7 + 1) * 0.5 + 0.5;
+      ref2.current.rotation.z += 0.01;
+    }
+    if (ref3.current) {
+      ref3.current.position.y = Math.sin(t * 0.3 + 2) * 0.5 + 0.5;
+      ref3.current.rotation.x += 0.01;
+    }
+    if (ref4.current) {
+      ref4.current.position.y = Math.sin(t * 0.6 + 3) * 0.5 + 0.5;
+      ref4.current.rotation.z += 0.01;
+    }
+  });
+
+  return (
+    <>
+      <mesh ref={ref1} position={[-2, 0.5, -1]}>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshStandardMaterial color="#0EA5E9" />
+      </mesh>
+      <mesh ref={ref2} position={[2, 0.5, -1]}>
+        <boxGeometry args={[0.5, 0.5, 0.5]} />
+        <meshStandardMaterial color="#0583BB" />
+      </mesh>
+      <mesh ref={ref3} position={[-1.5, 0.5, 1]}>
+        <tetrahedronGeometry args={[0.4]} />
+        <meshStandardMaterial color="#66CCFF" />
+      </mesh>
+      <mesh ref={ref4} position={[1.5, 0.5, 1]}>
+        <octahedronGeometry args={[0.4]} />
+        <meshStandardMaterial color="#33BBFF" />
+      </mesh>
+    </>
+  );
+}
 
 export default function FloatingElements({ height = 200 }) {
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const splineRef = useRef(null);
-  const animationFrameRef = useRef(null);
-  
-  function onSplineLoad(spline) {
-    setLoaded(true);
-    splineRef.current = spline;
-    
-    // Set up animations for floating elements
-    return animateFloatingElements(spline);
-  }
-  
-  function animateFloatingElements(spline) {
-    if (!spline) return;
-    
-    try {
-      // Find the objects to animate
-      const floatingObjects = [
-        spline.findObjectByName('FloatingShape1'),
-        spline.findObjectByName('FloatingShape2'),
-        spline.findObjectByName('FloatingShape3'),
-        spline.findObjectByName('FloatingShape4')
-      ].filter(Boolean);
-      
-      if (floatingObjects.length === 0) {
-        console.warn('No floating objects found in Spline scene');
-        return;
-      }
-      
-      // Set up animation loop
-      const animate = (time) => {
-        floatingObjects.forEach((obj, index) => {
-          if (obj) {
-            // Create bobbing motion with different phases
-            obj.position.y = Math.sin(time * 0.001 + index * 0.7) * 0.5 + obj.position.y;
-            
-            // Gentle rotation
-            obj.rotation.x += 0.001 * (index % 2 ? 1 : -1);
-            obj.rotation.y += 0.001 * (index % 3 ? 1 : -1);
-          }
-        });
-        
-        animationFrameRef.current = requestAnimationFrame(animate);
-      };
-      
-      // Start animation
-      animationFrameRef.current = requestAnimationFrame(animate);
-    } catch (err) {
-      console.error('Error animating floating elements:', err);
-    }
-  }
-  
-  const handleError = () => {
-    console.error("Failed to load floating elements");
-    setHasError(true);
-  };
-  
-  // Clean up animation frame on unmount
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []);
-  
   return (
-    <div style={{ 
-      width: '100%', 
-      height: `${height}px`, 
-      position: 'absolute', 
-      inset: 0, 
-      zIndex: 0, 
-      pointerEvents: 'none',
-      overflow: 'hidden'
-    }}>
-      {hasError ? (
-        <div className="w-full h-full flex items-center justify-center opacity-30">
-          <Sparkles size={height / 4} className="text-brand-500" />
-        </div>
-      ) : (
-        <Spline
-          scene="https://prod.spline.design/OI8gHC6ycEWjC5Nh/scene.splinecode"
-          onLoad={onSplineLoad}
-          onError={handleError}
-          style={{ width: '100%', height: '100%' }}
-        />
-      )}
-    </div>
+    <Canvas
+      camera={{ position: [0, 0, 5], fov: 50 }}
+      style={{ width: '100%', height: `${height}px`, position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
+    >
+      <color attach="background" args={['transparent']} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} />
+      <FloatingShapes />
+    </Canvas>
   );
 }
