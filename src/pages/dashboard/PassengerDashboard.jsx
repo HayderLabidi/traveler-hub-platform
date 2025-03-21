@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,16 +46,7 @@ const PassengerDashboard = () => {
   const [showDriversMap, setShowDriversMap] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("find");
-  const [myRequests, setMyRequests] = useState([
-    { 
-      id: 1, 
-      from: "Downtown", 
-      to: "Airport", 
-      date: "Tomorrow, 8:00 AM", 
-      responses: 2,
-      status: "Active" 
-    }
-  ]);
+  const [myRequests, setMyRequests] = useState([]);
   
   const [nearbyDrivers, setNearbyDrivers] = useState([
     { 
@@ -216,16 +206,7 @@ const PassengerDashboard = () => {
     ));
   };
 
-  const handleRideRequestSuccess = () => {
-    const newRequest = { 
-      id: Date.now(), 
-      from: "Current Location", 
-      to: "University", 
-      date: "Today, 3:00 PM", 
-      responses: 0,
-      status: "Active" 
-    };
-    
+  const handleRideRequestSuccess = (newRequest) => {
     setMyRequests([newRequest, ...myRequests]);
     setActiveTab("requests");
   };

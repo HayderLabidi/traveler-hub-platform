@@ -52,8 +52,18 @@ const PostRideRequestForm = ({ onSuccess }) => {
         description: "Drivers will be notified of your request."
       });
       
+      // Pass the actual form data to the onSuccess callback
       if (onSuccess) {
-        onSuccess();
+        const newRequest = {
+          id: Date.now(),
+          from: formData.fromLocation,
+          to: formData.toLocation,
+          date: `${format(formData.date, "PPP")}, ${formData.time}`,
+          responses: 0,
+          status: "Active"
+        };
+        
+        onSuccess(newRequest);
       }
       
       // Reset form
