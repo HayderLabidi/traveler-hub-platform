@@ -25,24 +25,11 @@ import {
   Home,
   Map,
   Menu,
-  Plus,
-  Eye,
-  Pencil,
-  Trash2
+  Plus
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { 
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
 
 const PassengerDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -60,8 +47,6 @@ const PassengerDashboard = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("find");
   const [myRequests, setMyRequests] = useState([]);
-  const [editingRequest, setEditingRequest] = useState(null);
-  const [viewingRequestDetails, setViewingRequestDetails] = useState(null);
   
   const [nearbyDrivers, setNearbyDrivers] = useState([
     { 
@@ -221,43 +206,9 @@ const PassengerDashboard = () => {
     ));
   };
 
-  const handleRideRequestSuccess = (newRequest, isEditing) => {
-    if (isEditing) {
-      // Update existing request
-      setMyRequests(myRequests.map(req => 
-        req.id === newRequest.id ? newRequest : req
-      ));
-    } else {
-      // Add new request
-      setMyRequests([newRequest, ...myRequests]);
-    }
-    
-    setEditingRequest(null); // Clear editing state
-    setActiveTab("requests"); // Switch to requests tab
-  };
-  
-  const handleEditRequest = (request) => {
-    setEditingRequest(request);
-    setActiveTab("post");
-  };
-  
-  const handleCancelRequest = (id) => {
-    // Show confirmation dialog instead of immediately deleting
-    if (confirm("Are you sure you want to cancel this ride request?")) {
-      // Set status to cancelled or remove from list
-      setMyRequests(myRequests.map(req => 
-        req.id === id ? { ...req, status: "Cancelled" } : req
-      ));
-      
-      toast({
-        title: "Request cancelled",
-        description: "Your ride request has been cancelled."
-      });
-    }
-  };
-  
-  const handleViewRequestDetails = (request) => {
-    setViewingRequestDetails(request);
+  const handleRideRequestSuccess = (newRequest) => {
+    setMyRequests([newRequest, ...myRequests]);
+    setActiveTab("requests");
   };
 
   return (
@@ -663,14 +614,7 @@ const PassengerDashboard = () => {
               
               {/* Post Request Tab Content */}
               <TabsContent value="post" className="mt-6">
-                <PostRideRequestForm 
-                  onSuccess={handleRideRequestSuccess} 
-                  editRequest={editingRequest}
-                  onCancel={() => {
-                    setEditingRequest(null);
-                    setActiveTab("requests");
-                  }}
-                />
+                <PostRideRequestForm onSuccess={handleRideRequestSuccess} />
               </TabsContent>
               
               {/* My Requests Tab Content */}
@@ -691,13 +635,7 @@ const PassengerDashboard = () => {
                                 <div className="text-sm text-muted-foreground">{request.date}</div>
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className={`text-sm px-2 py-1 rounded ${
-                                  request.status === 'Active' 
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
-                                    : request.status === 'Cancelled'
-                                      ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                                      : 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
-                                }`}>
+                                <span className="text-sm bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded">
                                   {request.status}
                                 </span>
                                 <span className="text-sm text-muted-foreground mt-1">
@@ -706,37 +644,15 @@ const PassengerDashboard = () => {
                               </div>
                             </div>
                             <div className="flex gap-2 mt-4">
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="flex-1"
-                                onClick={() => handleViewRequestDetails(request)}
-                              >
-                                <Eye className="h-4 w-4 mr-2" />
-                                View Details
+                              <Button variant="outline" size="sm" className="flex-1">
+                                View Responses
                               </Button>
-                              {request.status === 'Active' && (
-                                <>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="flex-1"
-                                    onClick={() => handleEditRequest(request)}
-                                  >
-                                    <Pencil className="h-4 w-4 mr-2" />
-                                    Edit
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="flex-1 text-red-500 hover:text-red-700"
-                                    onClick={() => handleCancelRequest(request.id)}
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Cancel
-                                  </Button>
-                                </>
-                              )}
+                              <Button variant="outline" size="sm" className="flex-1">
+                                Edit Request
+                              </Button>
+                              <Button variant="outline" size="sm" className="flex-1 text-red-500 hover:text-red-700">
+                                Cancel
+                              </Button>
                             </div>
                           </div>
                         ))}
@@ -757,22 +673,56 @@ const PassengerDashboard = () => {
               </TabsContent>
             </Tabs>
 
-            {/* Request Details Dialog */}
-            {viewingRequestDetails && (
-              <Dialog open={!!viewingRequestDetails} onOpenChange={(open) => {
-                if (!open) setViewingRequestDetails(null);
-              }}>
-                <DialogContent className="sm:max-w-[500px]">
-                  <DialogHeader>
-                    <DialogTitle>Ride Request Details</DialogTitle>
-                    <DialogDescription>
-                      Full information about your ride request
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="space-y-4 mt-4">
-                    <div className="border-b pb-2">
-                      <h3 className="font-semibold text-lg">Route</h3>
-                      <div className="flex items-center mt-2">
-                        <div className="flex flex-col items-center mr-2">
-                          <div
+            {/* Upcoming Rides */}
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Upcoming Rides</CardTitle>
+                    <CardDescription>Your scheduled trips</CardDescription>
+                  </div>
+                  <Button variant="outline" onClick={() => navigate("/book-ride")}>
+                    <CarFront className="h-4 w-4 mr-2" />
+                    Book New
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {rides.length > 0 ? (
+                  <div className="space-y-4">
+                    {rides.map((ride) => (
+                      <div key={ride.id} className="border rounded-lg p-4 flex justify-between items-center hover:bg-accent/50 transition-colors">
+                        <div>
+                          <div className="font-medium">{ride.from} → {ride.to}</div>
+                          <div className="text-sm text-muted-foreground">{ride.date}</div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="outline" size="sm">
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Message
+                          </Button>
+                          <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                            {ride.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No upcoming rides</p>
+                    <Button variant="link" onClick={() => navigate("/book-ride")}>Book your first ride</Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+};
+
+export default PassengerDashboard;
