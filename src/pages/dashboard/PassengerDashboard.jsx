@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import NearbyDriversMap from "@/components/NearbyDriversMap";
+import PostRideRequestForm from "@/components/PostRideRequestForm";
 import { 
   MapPin, 
   Search, 
@@ -24,7 +25,8 @@ import {
   LogOut,
   Home,
   Map,
-  Menu
+  Menu,
+  Plus
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -44,6 +46,17 @@ const PassengerDashboard = () => {
   const [searchLocation, setSearchLocation] = useState("");
   const [showDriversMap, setShowDriversMap] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
+  const [activeTab, setActiveTab] = useState("find");
+  const [myRequests, setMyRequests] = useState([
+    { 
+      id: 1, 
+      from: "Downtown", 
+      to: "Airport", 
+      date: "Tomorrow, 8:00 AM", 
+      responses: 2,
+      status: "Active" 
+    }
+  ]);
   
   const [nearbyDrivers, setNearbyDrivers] = useState([
     { 
@@ -203,6 +216,20 @@ const PassengerDashboard = () => {
     ));
   };
 
+  const handleRideRequestSuccess = () => {
+    const newRequest = { 
+      id: Date.now(), 
+      from: "Current Location", 
+      to: "University", 
+      date: "Today, 3:00 PM", 
+      responses: 0,
+      status: "Active" 
+    };
+    
+    setMyRequests([newRequest, ...myRequests]);
+    setActiveTab("requests");
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -314,6 +341,14 @@ const PassengerDashboard = () => {
                 >
                   <CarFront className="h-4 w-4 mr-2" />
                   Book a Ride
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab("post")}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Post Ride Request
                 </Button>
                 <Button 
                   variant="outline" 
@@ -445,146 +480,217 @@ const PassengerDashboard = () => {
               </Card>
             </div>
 
-            {/* Find Drivers Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Find Nearby Drivers</CardTitle>
-                <CardDescription>Search for available drivers in your area</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="md:col-span-2">
-                      <Label htmlFor="location">Location</Label>
-                      <div className="flex mt-1">
-                        <Input 
-                          id="location" 
-                          placeholder="Enter your location" 
-                          value={searchLocation}
-                          onChange={(e) => setSearchLocation(e.target.value)}
-                          className="rounded-r-none"
-                        />
-                        <Button 
-                          variant="outline" 
-                          className="rounded-l-none border-l-0"
-                          onClick={handleUseCurrentLocation}
-                        >
-                          <MapPin size={16} />
-                        </Button>
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="radius">Radius (km)</Label>
-                      <Input 
-                        id="radius" 
-                        type="number" 
-                        min="1" 
-                        max="50" 
-                        value={searchRadius}
-                        onChange={(e) => setSearchRadius(Number(e.target.value))}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    className="w-full" 
-                    onClick={handleLocationSearch}
-                  >
-                    <Search className="mr-2" size={16} />
-                    Find Drivers
-                  </Button>
-                  
-                  {showDriversMap && (
-                    <div className="mt-4">
-                      <Tabs defaultValue="grid" className="w-full" onValueChange={(value) => setViewMode(value)}>
-                        <div className="flex justify-between items-center mb-4">
-                          <TabsList>
-                            <TabsTrigger value="grid">Grid View</TabsTrigger>
-                            <TabsTrigger value="map">Map View</TabsTrigger>
-                          </TabsList>
+            {/* Tabs for Find Rides / Post Requests / My Requests */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="w-full grid grid-cols-3">
+                <TabsTrigger value="find">Find Drivers</TabsTrigger>
+                <TabsTrigger value="post">Post Request</TabsTrigger>
+                <TabsTrigger value="requests">My Requests</TabsTrigger>
+              </TabsList>
+              
+              {/* Find Drivers Tab Content */}
+              <TabsContent value="find" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Find Nearby Drivers</CardTitle>
+                    <CardDescription>Search for available drivers in your area</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="md:col-span-2">
+                          <Label htmlFor="location">Location</Label>
+                          <div className="flex mt-1">
+                            <Input 
+                              id="location" 
+                              placeholder="Enter your location" 
+                              value={searchLocation}
+                              onChange={(e) => setSearchLocation(e.target.value)}
+                              className="rounded-r-none"
+                            />
+                            <Button 
+                              variant="outline" 
+                              className="rounded-l-none border-l-0"
+                              onClick={handleUseCurrentLocation}
+                            >
+                              <MapPin size={16} />
+                            </Button>
+                          </div>
                         </div>
-                        
-                        <TabsContent value="grid" className="w-full mt-0">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {nearbyDrivers.map((driver) => (
-                              <Card key={driver.id} className="overflow-hidden card-hover">
-                                <div className="aspect-video relative bg-muted">
-                                  {driver.image && (
-                                    <img 
-                                      src={driver.image} 
-                                      alt={driver.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  )}
-                                  <div className="absolute bottom-2 right-2 bg-background/80 text-foreground px-2 py-1 rounded-md text-sm font-medium">
-                                    {driver.price}
-                                  </div>
-                                </div>
-                                <CardContent className="p-4">
-                                  <div className="flex justify-between items-start">
-                                    <div>
-                                      <h3 className="font-medium text-lg">{driver.name}</h3>
-                                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                        <Star size={14} className="text-yellow-500" fill="currentColor" />
-                                        <span>{driver.rating}</span>
-                                        <span className="mx-1">•</span>
-                                        <MapPin size={14} />
-                                        <span>{driver.distance}</span>
+                        <div>
+                          <Label htmlFor="radius">Radius (km)</Label>
+                          <Input 
+                            id="radius" 
+                            type="number" 
+                            min="1" 
+                            max="50" 
+                            value={searchRadius}
+                            onChange={(e) => setSearchRadius(Number(e.target.value))}
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full" 
+                        onClick={handleLocationSearch}
+                      >
+                        <Search className="mr-2" size={16} />
+                        Find Drivers
+                      </Button>
+                      
+                      {showDriversMap && (
+                        <div className="mt-4">
+                          <Tabs defaultValue="grid" className="w-full" onValueChange={(value) => setViewMode(value)}>
+                            <div className="flex justify-between items-center mb-4">
+                              <TabsList>
+                                <TabsTrigger value="grid">Grid View</TabsTrigger>
+                                <TabsTrigger value="map">Map View</TabsTrigger>
+                              </TabsList>
+                            </div>
+                            
+                            <TabsContent value="grid" className="w-full mt-0">
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {nearbyDrivers.map((driver) => (
+                                  <Card key={driver.id} className="overflow-hidden card-hover">
+                                    <div className="aspect-video relative bg-muted">
+                                      {driver.image && (
+                                        <img 
+                                          src={driver.image} 
+                                          alt={driver.name}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      )}
+                                      <div className="absolute bottom-2 right-2 bg-background/80 text-foreground px-2 py-1 rounded-md text-sm font-medium">
+                                        {driver.price}
                                       </div>
                                     </div>
-                                  </div>
-                                  
-                                  <div className="mt-3 space-y-2">
-                                    <div className="flex items-center gap-2 text-sm">
-                                      <CarFront size={14} />
-                                      <span>{driver.vehicle?.make} {driver.vehicle?.model}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                      <Clock size={14} />
-                                      <span>Departing at {driver.departureTime}</span>
-                                    </div>
-                                    <div className="text-sm">
-                                      {driver.vehicle?.seatsAvailable} seats available
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="mt-4 flex gap-2">
-                                    <Button 
-                                      className="flex-1" 
-                                      onClick={() => navigate("/book-ride")}
-                                    >
-                                      Book Ride
-                                    </Button>
-                                    <Button 
-                                      variant="outline" 
-                                      size="icon"
-                                      onClick={() => {/* Message driver */}}
-                                    >
-                                      <MessageSquare size={16} />
-                                    </Button>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </TabsContent>
-                        
-                        <TabsContent value="map" className="w-full mt-0">
-                          <div className="rounded-lg overflow-hidden border border-border">
-                            <NearbyDriversMap 
-                              drivers={nearbyDrivers} 
-                              center={{ lng: -73.985, lat: 40.748 }} 
-                              radius={searchRadius}
-                            />
-                          </div>
-                        </TabsContent>
-                      </Tabs>
+                                    <CardContent className="p-4">
+                                      <div className="flex justify-between items-start">
+                                        <div>
+                                          <h3 className="font-medium text-lg">{driver.name}</h3>
+                                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                            <Star size={14} className="text-yellow-500" fill="currentColor" />
+                                            <span>{driver.rating}</span>
+                                            <span className="mx-1">•</span>
+                                            <MapPin size={14} />
+                                            <span>{driver.distance}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
+                                      <div className="mt-3 space-y-2">
+                                        <div className="flex items-center gap-2 text-sm">
+                                          <CarFront size={14} />
+                                          <span>{driver.vehicle?.make} {driver.vehicle?.model}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm">
+                                          <Clock size={14} />
+                                          <span>Departing at {driver.departureTime}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                          {driver.vehicle?.seatsAvailable} seats available
+                                        </div>
+                                      </div>
+                                      
+                                      <div className="mt-4 flex gap-2">
+                                        <Button 
+                                          className="flex-1" 
+                                          onClick={() => navigate("/book-ride")}
+                                        >
+                                          Book Ride
+                                        </Button>
+                                        <Button 
+                                          variant="outline" 
+                                          size="icon"
+                                          onClick={() => {/* Message driver */}}
+                                        >
+                                          <MessageSquare size={16} />
+                                        </Button>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </div>
+                            </TabsContent>
+                            
+                            <TabsContent value="map" className="w-full mt-0">
+                              <div className="rounded-lg overflow-hidden border border-border">
+                                <NearbyDriversMap 
+                                  drivers={nearbyDrivers} 
+                                  center={{ lng: -73.985, lat: 40.748 }} 
+                                  radius={searchRadius}
+                                />
+                              </div>
+                            </TabsContent>
+                          </Tabs>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Post Request Tab Content */}
+              <TabsContent value="post" className="mt-6">
+                <PostRideRequestForm onSuccess={handleRideRequestSuccess} />
+              </TabsContent>
+              
+              {/* My Requests Tab Content */}
+              <TabsContent value="requests" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>My Ride Requests</CardTitle>
+                    <CardDescription>Requests you've posted for drivers</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {myRequests.length > 0 ? (
+                      <div className="space-y-4">
+                        {myRequests.map((request) => (
+                          <div key={request.id} className="border rounded-lg p-4 hover:bg-accent/50 transition-colors">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="font-medium text-lg">{request.from} → {request.to}</div>
+                                <div className="text-sm text-muted-foreground">{request.date}</div>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <span className="text-sm bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded">
+                                  {request.status}
+                                </span>
+                                <span className="text-sm text-muted-foreground mt-1">
+                                  {request.responses} {request.responses === 1 ? 'response' : 'responses'}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mt-4">
+                              <Button variant="outline" size="sm" className="flex-1">
+                                View Responses
+                              </Button>
+                              <Button variant="outline" size="sm" className="flex-1">
+                                Edit Request
+                              </Button>
+                              <Button variant="outline" size="sm" className="flex-1 text-red-500 hover:text-red-700">
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">You haven't posted any ride requests yet</p>
+                        <Button 
+                          variant="link" 
+                          onClick={() => setActiveTab("post")}
+                        >
+                          Post your first request
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
 
             {/* Upcoming Rides */}
             <Card>
