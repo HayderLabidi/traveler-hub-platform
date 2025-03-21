@@ -7,8 +7,9 @@ import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
-import Car3DModel from "@/components/3D/Car3DModel";
+import CarModel from "@/components/3D/CarModel";
 import FloatingElements from "@/components/3D/FloatingElements";
+import { Suspense } from "react";
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -41,14 +42,12 @@ const Index = () => {
     <div className="flex flex-col min-h-screen">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       
-      {/* Hero Section with 3D Car */}
-      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 bg-gradient-to-br from-brand-600 to-brand-800 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <FloatingElements height={600} />
-        </div>
+      {/* Hero Section */}
+      <section className="pt-24 pb-16 sm:pt-32 sm:pb-24 hero-gradient relative overflow-hidden">
+        <FloatingElements className="opacity-40" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-white relative z-10">
+            <div className="text-white animate-fade-in relative z-10">
               <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
                 Share the ride, <br /> share the cost
               </h1>
@@ -73,22 +72,18 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
-              {/* Replace static image with 3D car model */}
-              <div className="w-full h-[400px] relative bg-white/5 backdrop-blur-sm rounded-xl">
-                <Car3DModel />
-              </div>
+            <div className="lg:block rounded-xl overflow-hidden shadow-xl relative z-10">
+              <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-xl"></div>}>
+                <CarModel />
+              </Suspense>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 sm:py-24 relative">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <FloatingElements height={500} />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -98,7 +93,7 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-none shadow-md hover:shadow-lg transition-all duration-300">
+              <Card key={index} className="border-none shadow-md card-hover">
                 <CardContent className="p-6">
                   <div className="bg-brand-100 dark:bg-brand-900/30 p-3 rounded-lg w-12 h-12 flex items-center justify-center mb-4">
                     <feature.icon className="text-brand-500" size={24} />
@@ -114,12 +109,32 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gray-100 dark:bg-gray-900 relative">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <FloatingElements height={300} />
+      {/* 3D Interactive Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-4">Experience RideShare in 3D</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Interact with our 3D model to get a feel for the RideShare experience.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <Suspense fallback={<div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-xl"></div>}>
+              <CarModel className="h-[500px]" />
+            </Suspense>
+            <div className="p-6 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Drag to rotate • Pinch or scroll to zoom
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -176,7 +191,6 @@ const Index = () => {
       
       <Footer />
       
-      {/* Add the ChatbotButton component */}
       <ChatbotButton />
     </div>
   );

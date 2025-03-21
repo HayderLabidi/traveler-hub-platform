@@ -1,11 +1,12 @@
 
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
+/* Keep existing logo styles */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -19,6 +20,7 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Keep existing animation keyframes */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -42,7 +44,7 @@
   color: #888;
 }
 
-/* 3D Component Styles */
+/* New 3D element styles */
 canvas {
   touch-action: none;
 }
@@ -52,53 +54,9 @@ canvas {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 0.75rem;
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.floating {
-  animation: float 6s ease-in-out infinite;
-}
-
-.floating-delay-1 {
-  animation-delay: -1s;
-}
-
-.floating-delay-2 {
-  animation-delay: -2s;
-}
-
-.floating-delay-3 {
-  animation-delay: -3s;
-}
-
-/* Hero gradient */
-.hero-gradient {
-  background: linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%);
-}
-
-/* Card hover effects */
-.card-hover {
-  transition: all 0.3s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Remove overflow-hidden on certain containers that might crop 3D elements */
-.no-overflow-3d {
-  overflow: visible !important;
+/* Fix for Three.js canvas in dark mode */
+.dark canvas {
+  filter: brightness(1.1);
 }
