@@ -41,6 +41,10 @@ import Rides from "./pages/admin/Rides";
 import Payments from "./pages/admin/Payments";
 import Support from "./pages/admin/Support";
 import AdminSettings from "./pages/admin/Settings";
+import DriverVerifications from "./pages/admin/DriverVerifications";
+
+// New pages
+import Verification from "./pages/driver/Verification";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +93,11 @@ const AppRoutes = () => {
       <Route path="/driver/settings" element={
         <ProtectedRoute allowedUserTypes={['driver']}>
           <Settings />
+        </ProtectedRoute>
+      } />
+      <Route path="/driver/verification" element={
+        <ProtectedRoute allowedUserTypes={['driver']}>
+          <Verification />
         </ProtectedRoute>
       } />
 
@@ -165,6 +174,11 @@ const AppRoutes = () => {
       <Route path="/admin/settings" element={
         <ProtectedRoute allowedUserTypes={['admin']}>
           <AdminSettings />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/verifications" element={
+        <ProtectedRoute allowedUserTypes={['admin']}>
+          <DriverVerifications />
         </ProtectedRoute>
       } />
       

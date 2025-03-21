@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,9 @@ import {
   BellRing,
   FileText,
   HelpCircle,
-  Check
+  Check,
+  FileCheck,
+  ShieldCheck
 } from "lucide-react";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useAuth } from "@/providers/AuthProvider";
@@ -75,6 +76,11 @@ const DashboardLayout = ({ children }) => {
     { label: "Earnings", icon: CreditCard, path: "/driver/earnings" },
     { label: "Messages", icon: MessageSquare, path: "/driver/messages" },
     { label: "Reviews", icon: Star, path: "/driver/reviews" },
+    {
+      title: "Verification",
+      href: "/driver/verification",
+      icon: ShieldCheck,
+    },
   ];
 
   const adminNavItems = [
@@ -84,6 +90,7 @@ const DashboardLayout = ({ children }) => {
     { label: "Payments", icon: CreditCard, path: "/admin/payments" },
     { label: "Support", icon: MessageSquare, path: "/admin/support" },
     { label: "Settings", icon: Settings, path: "/admin/settings" },
+    { label: "Verifications", icon: ShieldCheck, path: "/admin/verifications" },
   ];
 
   const navItems = user?.type === "passenger" 
