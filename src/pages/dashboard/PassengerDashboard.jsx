@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import NearbyDriversMap from "@/components/NearbyDriversMap";
 import PostRideRequestForm from "@/components/PostRideRequestForm";
+import ChatDialog from "@/components/Chat/ChatDialog";
 import { 
   MapPin, 
   Search, 
@@ -25,11 +27,22 @@ import {
   Home,
   Map,
   Menu,
-  Plus
+  Plus,
+  Info,
+  X
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
 
 const PassengerDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -47,6 +60,13 @@ const PassengerDashboard = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("find");
   const [myRequests, setMyRequests] = useState([]);
+  
+  // Chat and details state
+  const [showChat, setShowChat] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [selectedRideDetails, setSelectedRideDetails] = useState(null);
+  const [showRideDetails, setShowRideDetails] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
   
   const [nearbyDrivers, setNearbyDrivers] = useState([
     { 
@@ -192,6 +212,23 @@ const PassengerDashboard = () => {
     }, 1000);
   };
   
+  // Chat handlers
+  const openChat = (driver, rideDetails) => {
+    setSelectedDriver(driver);
+    setSelectedRideDetails(rideDetails);
+    setShowChat(true);
+  };
+  
+  const closeChat = () => {
+    setShowChat(false);
+  };
+  
+  // View request details
+  const viewRequestDetails = (request) => {
+    setSelectedRequest(request);
+    setShowRideDetails(true);
+  };
+  
   const markAllAsRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
     toast({
@@ -209,6 +246,20 @@ const PassengerDashboard = () => {
   const handleRideRequestSuccess = (newRequest) => {
     setMyRequests([newRequest, ...myRequests]);
     setActiveTab("requests");
+  };
+  
+  // Handle cancellation of a request
+  const handleCancelRequest = (requestId) => {
+    setMyRequests(myRequests.map(request => 
+      request.id === requestId ? { ...request, status: "cancelled" } : request
+    ));
+    
+    toast({
+      title: "Request cancelled",
+      description: "Your ride request has been cancelled successfully."
+    });
+    
+    setShowRideDetails(false);
   };
 
   return (
@@ -584,7 +635,7 @@ const PassengerDashboard = () => {
                                         <Button 
                                           variant="outline" 
                                           size="icon"
-                                          onClick={() => {/* Message driver */}}
+                                          onClick={() => openChat(driver, { id: `ride-${driver.id}`, type: "direct-booking" })}
                                         >
                                           <MessageSquare size={16} />
                                         </Button>
@@ -635,24 +686,57 @@ const PassengerDashboard = () => {
                                 <div className="text-sm text-muted-foreground">{request.date}</div>
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className="text-sm bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded">
-                                  {request.status}
+                                <span className={`text-sm px-2 py-1 rounded ${
+                                  request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                                  request.status === 'accepted' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                                  request.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' :
+                                  'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                                }`}>
+                                  {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                                 </span>
-                                <span className="text-sm text-muted-foreground mt-1">
-                                  {request.responses} {request.responses === 1 ? 'response' : 'responses'}
-                                </span>
+                                {request.responses > 0 && (
+                                  <span className="text-sm text-muted-foreground mt-1">
+                                    {request.responses} {request.responses === 1 ? 'response' : 'responses'}
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div className="flex gap-2 mt-4">
-                              <Button variant="outline" size="sm" className="flex-1">
-                                View Responses
+                              {request.status === 'accepted' && (
+                                <Button 
+                                  variant="default" 
+                                  size="sm" 
+                                  className="flex-1"
+                                  onClick={() => openChat({ 
+                                    id: request.driverId || 'driver-1', 
+                                    name: request.driverName || 'Your Driver',
+                                    image: request.driverImage || "https://randomuser.me/api/portraits/men/32.jpg"
+                                  }, { id: request.id, type: "ride-request" })}
+                                >
+                                  <MessageSquare className="h-4 w-4 mr-2" />
+                                  Chat with Driver
+                                </Button>
+                              )}
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="flex-1"
+                                onClick={() => viewRequestDetails(request)}
+                              >
+                                <Info className="h-4 w-4 mr-2" />
+                                View Details
                               </Button>
-                              <Button variant="outline" size="sm" className="flex-1">
-                                Edit Request
-                              </Button>
-                              <Button variant="outline" size="sm" className="flex-1 text-red-500 hover:text-red-700">
-                                Cancel
-                              </Button>
+                              {request.status === 'pending' && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="flex-1 text-red-500 hover:text-red-700"
+                                  onClick={() => handleCancelRequest(request.id)}
+                                >
+                                  <X className="h-4 w-4 mr-2" />
+                                  Cancel
+                                </Button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -697,7 +781,15 @@ const PassengerDashboard = () => {
                           <div className="text-sm text-muted-foreground">{ride.date}</div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => openChat({ 
+                              id: 'driver-' + ride.id, 
+                              name: 'Ride Driver',
+                              image: "https://randomuser.me/api/portraits/men/32.jpg"
+                            }, ride)}
+                          >
                             <MessageSquare className="h-4 w-4 mr-2" />
                             Message
                           </Button>
@@ -719,6 +811,114 @@ const PassengerDashboard = () => {
           </div>
         </div>
       </main>
+      
+      {/* Chat Dialog */}
+      <ChatDialog 
+        isOpen={showChat}
+        onClose={closeChat}
+        driver={selectedDriver}
+        rideDetails={selectedRideDetails}
+        passengerID="passenger-1"
+      />
+      
+      {/* Request Details Dialog */}
+      <Dialog open={showRideDetails} onOpenChange={setShowRideDetails}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Ride Request Details</DialogTitle>
+            <DialogDescription>
+              Details of your ride request
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">From</h4>
+                  <p>{selectedRequest.from}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">To</h4>
+                  <p>{selectedRequest.to}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">Date</h4>
+                  <p>{selectedRequest.date}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">Time</h4>
+                  <p>{selectedRequest.time || "Flexible"}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">Passengers</h4>
+                  <p>{selectedRequest.passengers || 1}</p>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">Price Budget</h4>
+                  <p>${selectedRequest.price || "Not specified"}</p>
+                </div>
+              </div>
+              
+              {selectedRequest.notes && (
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground">Additional Notes</h4>
+                  <p>{selectedRequest.notes}</p>
+                </div>
+              )}
+              
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
+                <p className={`inline-block px-2 py-1 rounded text-sm ${
+                  selectedRequest.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                  selectedRequest.status === 'accepted' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                  selectedRequest.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' :
+                  'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                }`}>
+                  {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex justify-between">
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+            
+            {selectedRequest && selectedRequest.status === 'pending' && (
+              <Button 
+                variant="destructive"
+                onClick={() => handleCancelRequest(selectedRequest.id)}
+              >
+                Cancel Request
+              </Button>
+            )}
+            
+            {selectedRequest && selectedRequest.status === 'accepted' && (
+              <Button
+                onClick={() => {
+                  setShowRideDetails(false);
+                  openChat({ 
+                    id: selectedRequest.driverId || 'driver-1', 
+                    name: selectedRequest.driverName || 'Your Driver',
+                    image: selectedRequest.driverImage || "https://randomuser.me/api/portraits/men/32.jpg"
+                  }, { id: selectedRequest.id, type: "ride-request" });
+                }}
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Chat with Driver
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       <Footer />
     </div>

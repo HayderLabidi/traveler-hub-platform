@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,13 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarIcon, Clock, MapPin } from "lucide-react";
+import { CalendarIcon, Clock, MapPin, MessageSquare } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import ChatDialog from "@/components/Chat/ChatDialog";
 
 const BookRide = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -36,6 +38,11 @@ const BookRide = () => {
   ]);
   
   const [selectedRide, setSelectedRide] = useState(null);
+  
+  // Chat state
+  const [showChat, setShowChat] = useState(false);
+  const [chatDriver, setChatDriver] = useState(null);
+  const [chatRide, setChatRide] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,9 +68,30 @@ const BookRide = () => {
       
       // Show available rides
       setAvailableRides([
-        { id: 1, type: "Standard", price: "$12.50", time: "3 min away", driver: "John D.", rating: 4.8 },
-        { id: 2, type: "Premium", price: "$18.75", time: "5 min away", driver: "Sarah M.", rating: 4.9 },
-        { id: 3, type: "XL", price: "$22.00", time: "7 min away", driver: "Mike J.", rating: 4.7 }
+        { 
+          id: 1, 
+          type: "Standard", 
+          price: "$12.50", 
+          time: "3 min away", 
+          driver: { name: "John D.", id: "driver-1", image: "https://randomuser.me/api/portraits/men/32.jpg" }, 
+          rating: 4.8 
+        },
+        { 
+          id: 2, 
+          type: "Premium", 
+          price: "$18.75", 
+          time: "5 min away", 
+          driver: { name: "Sarah M.", id: "driver-2", image: "https://randomuser.me/api/portraits/women/44.jpg" }, 
+          rating: 4.9 
+        },
+        { 
+          id: 3, 
+          type: "XL", 
+          price: "$22.00", 
+          time: "7 min away", 
+          driver: { name: "Mike J.", id: "driver-3", image: "https://randomuser.me/api/portraits/men/22.jpg" }, 
+          rating: 4.7 
+        }
       ]);
       
       toast({
@@ -98,6 +126,13 @@ const BookRide = () => {
       
       navigate("/passenger/dashboard");
     }, 1500);
+  };
+  
+  // Chat handlers
+  const openChat = (driver, ride) => {
+    setChatDriver(driver);
+    setChatRide(ride);
+    setShowChat(true);
   };
 
   return (
@@ -240,11 +275,23 @@ const BookRide = () => {
                         <div>
                           <div className="font-medium">{ride.type}</div>
                           <div className="text-sm text-muted-foreground">
-                            {ride.time} • Driver: {ride.driver} ({ride.rating})
+                            {ride.time} • Driver: {ride.driver.name} ({ride.rating})
                           </div>
                         </div>
-                        <div className="font-medium text-lg">
-                          {ride.price}
+                        <div className="flex items-center">
+                          <div className="font-medium text-lg mr-2">
+                            {ride.price}
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openChat(ride.driver, { id: `ride-${ride.id}`, type: "prebooking-inquiry" });
+                            }}
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -263,6 +310,15 @@ const BookRide = () => {
           )}
         </div>
       </main>
+      
+      {/* Chat Dialog */}
+      <ChatDialog 
+        isOpen={showChat}
+        onClose={() => setShowChat(false)}
+        driver={chatDriver}
+        rideDetails={chatRide}
+        passengerID="passenger-1"
+      />
       
       <Footer />
     </div>

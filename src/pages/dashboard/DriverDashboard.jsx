@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,8 @@ import {
   Settings, 
   Plus, 
   Edit2,
-  LogOut
+  LogOut,
+  MessageSquare
 } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -23,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import ChatDialog from "@/components/Chat/ChatDialog";
 
 const DriverDashboard = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -41,10 +44,19 @@ const DriverDashboard = () => {
     notes: ""
   });
 
+  // Chat state
+  const [showChat, setShowChat] = useState(false);
+  const [chatPassenger, setChatPassenger] = useState(null);
+  const [chatRide, setChatRide] = useState(null);
+
   const [rideRequests, setRideRequests] = useState([
     {
       id: 1,
-      passenger: "John Doe",
+      passenger: {
+        id: "passenger-1",
+        name: "John Doe",
+        image: "https://randomuser.me/api/portraits/men/41.jpg"
+      },
       from: "New York",
       to: "Boston",
       date: "2024-03-20",
@@ -54,7 +66,11 @@ const DriverDashboard = () => {
     },
     {
       id: 2,
-      passenger: "Jane Smith",
+      passenger: {
+        id: "passenger-2",
+        name: "Jane Smith",
+        image: "https://randomuser.me/api/portraits/women/65.jpg"
+      },
       from: "Boston",
       to: "New York",
       date: "2024-03-21",
@@ -67,7 +83,11 @@ const DriverDashboard = () => {
   const [rideHistory, setRideHistory] = useState([
     {
       id: 1,
-      passenger: "Alice Johnson",
+      passenger: {
+        id: "passenger-3",
+        name: "Alice Johnson",
+        image: "https://randomuser.me/api/portraits/women/33.jpg"
+      },
       from: "New York",
       to: "Boston",
       date: "2024-03-15",
@@ -121,8 +141,13 @@ const DriverDashboard = () => {
 
   const handleAcceptRequest = (requestId) => {
     setRideRequests(prevRequests => 
-      prevRequests.filter(request => request.id !== requestId)
+      prevRequests.map(request => 
+        request.id === requestId 
+          ? { ...request, status: "accepted" } 
+          : request
+      )
     );
+    
     toast({
       title: "Request accepted",
       description: "You have accepted the ride request."
@@ -137,6 +162,13 @@ const DriverDashboard = () => {
       title: "Request declined",
       description: "You have declined the ride request."
     });
+  };
+  
+  // Chat handlers
+  const openChat = (passenger, ride) => {
+    setChatPassenger(passenger);
+    setChatRide(ride);
+    setShowChat(true);
   };
 
   const handleEditProfile = () => {
@@ -398,7 +430,7 @@ const DriverDashboard = () => {
                     {rideRequests.map((request) => (
                       <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div>
-                          <div className="font-medium">{request.passenger}</div>
+                          <div className="font-medium">{request.passenger.name}</div>
                           <div className="text-sm text-muted-foreground">
                             {request.from} → {request.to}
                           </div>
@@ -407,20 +439,33 @@ const DriverDashboard = () => {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleAcceptRequest(request.id)}
-                          >
-                            Accept
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDeclineRequest(request.id)}
-                          >
-                            Decline
-                          </Button>
+                          {request.status === "accepted" ? (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => openChat(request.passenger, { id: request.id, type: "ride-request" })}
+                            >
+                              <MessageSquare className="h-4 w-4 mr-1" />
+                              Chat
+                            </Button>
+                          ) : (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleAcceptRequest(request.id)}
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDeclineRequest(request.id)}
+                              >
+                                Decline
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -445,7 +490,7 @@ const DriverDashboard = () => {
                     {rideHistory.map((ride) => (
                       <div key={ride.id} className="flex items-center justify-between p-4 border rounded-lg">
                         <div>
-                          <div className="font-medium">{ride.passenger}</div>
+                          <div className="font-medium">{ride.passenger.name}</div>
                           <div className="text-sm text-muted-foreground">
                             {ride.from} → {ride.to}
                           </div>
@@ -462,6 +507,15 @@ const DriverDashboard = () => {
                             <Star className="h-4 w-4 text-yellow-400 mr-1" />
                             {ride.rating}
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="mt-1"
+                            onClick={() => openChat(ride.passenger, { id: ride.id, type: "completed-ride" })}
+                          >
+                            <MessageSquare className="h-4 w-4 mr-1" />
+                            Message
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -477,9 +531,18 @@ const DriverDashboard = () => {
         </div>
       </main>
 
+      {/* Chat Dialog */}
+      <ChatDialog 
+        isOpen={showChat}
+        onClose={() => setShowChat(false)}
+        driver={{ id: "driver-self", name: driverProfile.name, image: "https://randomuser.me/api/portraits/men/32.jpg" }}
+        rideDetails={chatRide}
+        passengerID={chatPassenger?.id}
+      />
+
       <Footer />
     </div>
   );
 };
 
-export default DriverDashboard; 
+export default DriverDashboard;
