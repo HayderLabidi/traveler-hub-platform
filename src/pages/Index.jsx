@@ -1,14 +1,17 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Car, Users, Clock, Shield, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const features = [
@@ -34,6 +37,43 @@ const Index = () => {
     },
   ];
 
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      // Redirect to appropriate dashboard based on user type
+      switch (user.type) {
+        case 'passenger':
+          navigate('/passenger/dashboard');
+          break;
+        case 'driver':
+          navigate('/driver/dashboard');
+          break;
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        default:
+          navigate('/login');
+      }
+    } else {
+      navigate('/register');
+    }
+  };
+
+  const handleDriveWithUs = () => {
+    if (isAuthenticated && user.type === 'driver') {
+      navigate('/driver/dashboard');
+    } else {
+      navigate('/driver/register');
+    }
+  };
+
+  const handleRideWithUs = () => {
+    if (isAuthenticated && user.type === 'passenger') {
+      navigate('/passenger/dashboard');
+    } else {
+      navigate('/passenger/register');
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -50,21 +90,33 @@ const Index = () => {
                 Connect with drivers and passengers heading your way. Save money, reduce traffic, and help the environment.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button 
-                  size="lg"
-                  className="bg-white text-brand-600 hover:bg-gray-100"
-                  onClick={() => navigate("/driver/register")}
-                >
-                  Drive
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-white hover:bg-white/10"
-                  onClick={() => navigate("/passenger/register")}
-                >
-                  Ride
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    size="lg"
+                    className="bg-white text-brand-600 hover:bg-gray-100"
+                    onClick={handleGetStarted}
+                  >
+                    Go to Dashboard
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      size="lg"
+                      className="bg-white text-brand-600 hover:bg-gray-100"
+                      onClick={handleDriveWithUs}
+                    >
+                      Drive
+                    </Button>
+                    <Button 
+                      size="lg"
+                      variant="outline"
+                      className="text-white border-white hover:bg-white/10"
+                      onClick={handleRideWithUs}
+                    >
+                      Ride
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
             <div className="hidden lg:block rounded-xl overflow-hidden shadow-xl">
@@ -117,58 +169,72 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="px-8"
-              onClick={() => navigate("/driver/register")}
-            >
-              Drive with us
-              <ChevronRight size={16} className="ml-1" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="px-8"
-              onClick={() => navigate("/passenger/register")}
-            >
-              Ride with us
-              <ChevronRight size={16} className="ml-1" />
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                size="lg" 
+                className="px-8"
+                onClick={handleGetStarted}
+              >
+                Go to Dashboard
+                <ChevronRight size={16} className="ml-1" />
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  size="lg" 
+                  className="px-8"
+                  onClick={handleDriveWithUs}
+                >
+                  Drive with us
+                  <ChevronRight size={16} className="ml-1" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="px-8"
+                  onClick={handleRideWithUs}
+                >
+                  Ride with us
+                  <ChevronRight size={16} className="ml-1" />
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-brand-100 dark:bg-brand-900/30 p-3 rounded-full">
-                <Mail className="text-brand-500" size={24} />
+      {/* Newsletter Section - Only show for non-authenticated users */}
+      {!isAuthenticated && (
+        <section className="py-16">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-brand-100 dark:bg-brand-900/30 p-3 rounded-full">
+                  <Mail className="text-brand-500" size={24} />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-center mb-4">Stay updated</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
+                Sign up for our newsletter to receive the latest news and promotions.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700"
+                />
+                <Button>Subscribe</Button>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-center mb-4">Stay updated</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
-              Sign up for our newsletter to receive the latest news and promotions.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 dark:bg-gray-700"
-              />
-              <Button>Subscribe</Button>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       
       <Footer />
       
-      {/* Add the ChatbotButton component */}
       <ChatbotButton />
     </div>
   );
 };
 
-export default Index; 
+export default Index;

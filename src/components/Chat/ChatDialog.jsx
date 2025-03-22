@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import PassengerDriverChat from "./PassengerDriverChat";
 
@@ -23,8 +24,11 @@ const ChatDialog = ({ isOpen, onClose, driver, rideDetails, passengerID }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[500px] p-0">
-        <DialogHeader className="sr-only">
-          <DialogTitle>Chat with Driver</DialogTitle>
+        <DialogHeader className="p-4 border-b">
+          <DialogTitle>Chat with {driver?.name || "Your Driver"}</DialogTitle>
+          <DialogDescription>
+            Communicate about your ride details and arrangements
+          </DialogDescription>
         </DialogHeader>
         <PassengerDriverChat
           driverId={driver?.id || "driver-1"}
