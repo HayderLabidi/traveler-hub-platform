@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -91,6 +90,39 @@ const Index = () => {
       to: "Detroit",
       image: "https://images.unsplash.com/photo-1564507789050-9778cfe083fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
       price: "$20-40",
+    },
+  ];
+
+  const popularDrivers = [
+    {
+      name: "Alex Thompson",
+      image: "https://randomuser.me/api/portraits/men/45.jpg",
+      rating: 4.9,
+      trips: 128,
+      car: "Tesla Model 3",
+      verified: true,
+      languages: ["English", "Spanish"],
+      bio: "Professional driver with 5+ years of experience. Clean car, safe driving, and great conversation!"
+    },
+    {
+      name: "Maria Garcia",
+      image: "https://randomuser.me/api/portraits/women/68.jpg",
+      rating: 4.8,
+      trips: 95,
+      car: "Toyota Camry",
+      verified: true,
+      languages: ["English", "Spanish", "French"],
+      bio: "Friendly driver who loves meeting new people. Regular commuter between major cities."
+    },
+    {
+      name: "David Chen",
+      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      rating: 5.0,
+      trips: 156,
+      car: "Honda Civic",
+      verified: true,
+      languages: ["English", "Mandarin"],
+      bio: "Top-rated driver with perfect safety record. Comfortable car with premium features."
     },
   ];
 
@@ -222,40 +254,63 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Popular Routes Section */}
+      {/* Popular Drivers Section */}
       <section className="py-16 bg-gray-50 dark:bg-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Popular Routes</h2>
+            <h2 className="text-3xl font-bold mb-4">Popular Drivers</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Discover frequently traveled routes with available rides.
+              Meet our most trusted and experienced drivers.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {popularDestinations.map((destination, index) => (
-              <div key={index} className="relative group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
-                <img src={destination.image} alt={`${destination.from} to ${destination.to}`} className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-white">
-                  <div className="flex items-center mb-2">
-                    <MapPin size={16} className="mr-1" />
-                    <p className="text-sm">{destination.from} - {destination.to}</p>
+            {popularDrivers.map((driver, index) => (
+              <Card key={index} className="border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <img 
+                      src={driver.image} 
+                      alt={driver.name} 
+                      className="w-16 h-16 rounded-full mr-4"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-semibold">{driver.name}</h3>
+                        {driver.verified && (
+                          <Shield className="h-4 w-4 text-blue-500" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <span className="text-sm text-gray-600">{driver.rating}</span>
+                        <span className="text-sm text-gray-500">({driver.trips} trips)</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-semibold">{destination.price}</h3>
-                    <Button size="sm" variant="outline" className="text-white border-white hover:bg-white/20">
-                      View Rides
-                    </Button>
+                  <div className="space-y-2 mb-4">
+                    <p className="text-sm text-gray-600">
+                      <Car className="inline-block mr-1 h-4 w-4" />
+                      {driver.car}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <Users className="inline-block mr-1 h-4 w-4" />
+                      {driver.languages.join(", ")}
+                    </p>
                   </div>
-                </div>
-              </div>
+                  <p className="text-gray-600 text-sm mb-4">{driver.bio}</p>
+                  <Button className="w-full group">
+                    View Profile
+                    <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
           
           <div className="text-center mt-10">
             <Button onClick={() => navigate('/passenger/book-ride')} className="group">
-              View All Routes
+              View All Drivers
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
