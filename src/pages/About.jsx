@@ -226,7 +226,7 @@ const About = () => {
             >
               <Button
                 size="icon"
-                className={`rounded-full w-14 h-14 ${isDarkMode ? 'bg-dark-primary' : 'bg-primary'} hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all group`}
+                className="rounded-full w-14 h-14 bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all group"
                 onClick={scrollToTop}
               >
                 <Rocket className="h-6 w-6 transition-transform group-hover:-translate-y-1" />
