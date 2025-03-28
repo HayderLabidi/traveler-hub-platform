@@ -66,133 +66,134 @@ const About = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <NavBar />
-      
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 dark:from-primary dark:to-primary/60" />
-        <div className="absolute inset-0 bg-grid-white/10" />
-        <motion.div 
-          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.h1 
-            className="text-4xl sm:text-6xl font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            About Us
-          </motion.h1>
-          <motion.p 
-            className="text-xl mb-8 max-w-3xl mx-auto text-white/80"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            We're on a mission to revolutionize the way people travel by making carpooling more accessible, 
-            sustainable, and community-driven.
-          </motion.p>
-        </motion.div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-24">
-        <motion.div 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div 
-                key={stat.label}
-                variants={itemVariants}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-                  <stat.icon className="h-6 w-6" />
-                </div>
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                <div className="text-muted-foreground">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Story Section */}
-      <section className="py-24 bg-muted/30">
-        <motion.div 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-dark-background' : 'bg-background'} text-foreground`}>
+      <div className="flex-grow">
+        <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        
+        {/* Hero Section */}
+        <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 overflow-hidden">
+          <div className={`absolute inset-0 ${isDarkMode ? 'bg-dark-gradient-to-br' : 'bg-gradient-to-br'} from-primary to-primary/60`} />
+          <div className="absolute inset-0 bg-grid-white/10" />
           <motion.div 
-            className="max-w-3xl mx-auto text-center mb-16"
-            variants={itemVariants}
+            className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-4">Our Story</h2>
-            <p className="text-muted-foreground">
-              Starting from a simple idea to connect travelers, we've grown into a platform that brings 
-              together thousands of people who share more than just rides – they share experiences.
-            </p>
+            <motion.h1 
+              className="text-4xl sm:text-6xl font-bold mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              About Us
+            </motion.h1>
+            <motion.p 
+              className="text-xl mb-8 max-w-3xl mx-auto text-white/80"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              We're on a mission to revolutionize the way people travel by making carpooling more accessible, 
+              sustainable, and community-driven.
+            </motion.p>
           </motion.div>
+        </section>
 
-          <div className="grid md:grid-cols-2 gap-12">
-            {values.map((value, index) => (
-              <motion.div 
-                key={value.title}
-                variants={itemVariants}
-              >
-                <Card className="h-full">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <value.icon className="h-6 w-6 text-primary" />
+        {/* Stats Section */}
+        <section className="py-24">
+          <motion.div 
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {stats.map((stat, index) => (
+                <motion.div 
+                  key={stat.label}
+                  variants={itemVariants}
+                  className="text-center"
+                >
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
+                    <stat.icon className="h-6 w-6" />
+                  </div>
+                  <div className="text-3xl font-bold mb-2">{stat.value}</div>
+                  <div className="text-muted-foreground">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Story Section */}
+        <section className={`py-24 ${isDarkMode ? 'bg-dark-muted/30' : 'bg-muted/30'}`}>
+          <motion.div 
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.div 
+              className="max-w-3xl mx-auto text-center mb-16"
+              variants={itemVariants}
+            >
+              <h2 className="text-3xl font-bold mb-4">Our Story</h2>
+              <p className="text-muted-foreground">
+                Starting from a simple idea to connect travelers, we've grown into a platform that brings 
+                together thousands of people who share more than just rides – they share experiences.
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-12">
+              {values.map((value, index) => (
+                <motion.div 
+                  key={value.title}
+                  variants={itemVariants}
+                >
+                  <Card className="h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <value.icon className="h-6 w-6 text-primary" />
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
+                          <p className="text-muted-foreground">{value.description}</p>
                         </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                        <p className="text-muted-foreground">{value.description}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-primary text-white">
-        <motion.div 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl font-bold mb-8">Ready to Join Our Community?</h2>
-          <Button 
-            size="lg" 
-            className="bg-white text-primary hover:bg-gray-100 group"
+        {/* CTA Section */}
+        <section className={`py-24 ${isDarkMode ? 'bg-dark-primary' : 'bg-primary'} text-white`}>
+          <motion.div 
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            Get Started
-            <Car className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </Button>
-        </motion.div>
-      </section>
-
+            <h2 className="text-3xl font-bold mb-8">Ready to Join Our Community?</h2>
+            <Button 
+              size="lg" 
+              className="bg-white text-primary hover:bg-gray-100 group"
+            >
+              Get Started
+              <Car className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </motion.div>
+        </section>
+      </div>
       <Footer />
 
       {/* Floating Action Button with Flash Effect */}
@@ -226,7 +227,7 @@ const About = () => {
             >
               <Button
                 size="icon"
-                className="rounded-full w-14 h-14 bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all group"
+                className={`rounded-full w-14 h-14 ${isDarkMode ? 'bg-dark-primary' : 'bg-primary'} hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all group`}
                 onClick={scrollToTop}
               >
                 <Rocket className="h-6 w-6 transition-transform group-hover:-translate-y-1" />
