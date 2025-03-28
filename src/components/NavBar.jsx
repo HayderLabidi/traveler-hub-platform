@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun, LogOut, User, Home, Settings } from "lucide-react";
@@ -18,7 +18,11 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -230,4 +234,4 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   );
 };
 
-export default NavBar; 
+export default NavBar;
