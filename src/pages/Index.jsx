@@ -14,7 +14,8 @@ import {
   Heart,
   MessageCircle,
   TrendingUp,
-  Award
+  Award,
+  Rocket
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "@/providers/DarkModeProvider";
@@ -23,11 +24,27 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from 'react';
 
 const Index = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 200);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -569,6 +586,47 @@ const Index = () => {
       <Footer />
       
       <ChatbotButton />
+
+      {/* Floating Action Button with Flash Effect */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1,
+              transition: {
+                duration: 0.3
+              }
+            }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="fixed bottom-8 left-8 z-50"
+          >
+            <motion.div
+              animate={{
+                boxShadow: [
+                  "0 0 0 0 rgba(0, 0, 0, 0)",
+                  "0 0 0 20px rgba(0, 0, 0, 0.1)",
+                  "0 0 0 0 rgba(0, 0, 0, 0)"
+                ]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <Button
+                size="icon"
+                className="rounded-full w-14 h-14 bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all group"
+                onClick={scrollToTop}
+              >
+                <Rocket className="h-6 w-6 transition-transform group-hover:-translate-y-1" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
