@@ -173,6 +173,19 @@ const About = () => {
           </motion.div>
         </section>
 
+        {/* Values Section */}
+        <section className="py-24">
+          <motion.div 
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Values content */}
+          </motion.div>
+        </section>
+
         {/* CTA Section */}
         <section className={`py-24 ${isDarkMode ? 'bg-dark-primary' : 'bg-primary'} text-white`}>
           <motion.div 

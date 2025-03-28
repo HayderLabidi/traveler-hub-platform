@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDarkMode } from "@/providers/DarkModeProvider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Bell, Lock, CreditCard, Globe } from "lucide-react";
+import { ArrowLeft, Save, Bell, Lock, CreditCard, Globe, Camera } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import FaceDetection from "@/components/FaceDetection";
 
 const Settings = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const location = useLocation();
+  const isDriver = location.pathname.includes('driver');
   
   const [settings, setSettings] = useState({
     notifications: {
@@ -58,6 +61,22 @@ const Settings = () => {
             </Button>
             <h1 className="text-3xl font-bold">Settings</h1>
           </div>
+
+          {/* Face Verification (Only for Drivers) */}
+          {isDriver && (
+            <Card className="mb-6">
+              <CardHeader>
+                <div className="flex items-center">
+                  <Camera className="h-5 w-5 mr-2" />
+                  <CardTitle>Face Verification</CardTitle>
+                </div>
+                <CardDescription>Verify your identity for enhanced security</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FaceDetection />
+              </CardContent>
+            </Card>
+          )}
 
           {/* Notification Settings */}
           <Card className="mb-6">

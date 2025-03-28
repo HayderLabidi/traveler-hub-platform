@@ -506,9 +506,20 @@ const DriverDashboard = () => {
                     <SelectItem value="accepted">Accepted</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => navigate("/driver/settings")}>
-                  <Settings className="h-4 w-4 mr-2" /> Settings
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => navigate("/driver/settings")} className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
