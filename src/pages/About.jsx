@@ -66,13 +66,13 @@ const About = () => {
   ];
 
   return (
-    <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-dark-background' : 'bg-background'} text-foreground`}>
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <div className="flex-grow">
         <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
         
         {/* Hero Section */}
         <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 overflow-hidden">
-          <div className={`absolute inset-0 ${isDarkMode ? 'bg-dark-gradient-to-br' : 'bg-gradient-to-br'} from-primary to-primary/60`} />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 dark:from-primary dark:to-primary/60" />
           <div className="absolute inset-0 bg-grid-white/10" />
           <motion.div 
             className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white"
@@ -111,16 +111,18 @@ const About = () => {
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
-                <motion.div 
+                <motion.div
                   key={stat.label}
                   variants={itemVariants}
-                  className="text-center"
+                  className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} shadow-lg transition-colors duration-200`}
                 >
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-                    <stat.icon className="h-6 w-6" />
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <stat.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <p className="text-2xl font-bold text-primary mb-1">{stat.value}</p>
+                    <p className="text-sm text-muted-foreground">{stat.label}</p>
                   </div>
-                  <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                  <div className="text-muted-foreground">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -128,7 +130,7 @@ const About = () => {
         </section>
 
         {/* Story Section */}
-        <section className={`py-24 ${isDarkMode ? 'bg-dark-muted/30' : 'bg-muted/30'}`}>
+        <section className="py-24 bg-muted/30">
           <motion.div 
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
             variants={containerVariants}
@@ -137,37 +139,34 @@ const About = () => {
             viewport={{ once: true }}
           >
             <motion.div 
-              className="max-w-3xl mx-auto text-center mb-16"
+              className="text-center mb-12"
               variants={itemVariants}
             >
               <h2 className="text-3xl font-bold mb-4">Our Story</h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground max-w-2xl mx-auto">
                 Starting from a simple idea to connect travelers, we've grown into a platform that brings 
                 together thousands of people who share more than just rides – they share experiences.
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-12">
-              {values.map((value, index) => (
-                <motion.div 
+            <div className="grid md:grid-cols-2 gap-8">
+              {values.map((value) => (
+                <motion.div
                   key={value.title}
                   variants={itemVariants}
+                  className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} shadow-lg transition-colors duration-200`}
                 >
-                  <Card className="h-full">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                            <value.icon className="h-6 w-6 text-primary" />
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                          <p className="text-muted-foreground">{value.description}</p>
-                        </div>
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <value.icon className="h-6 w-6 text-primary" />
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
+                      <p className="text-muted-foreground">{value.description}</p>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </div>
