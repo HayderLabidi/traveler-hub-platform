@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Bell, Lock, CreditCard, Globe, Camera } from "lucide-react";
+import { ArrowLeft, Save, Bell, Lock, CreditCard, Globe, Camera, Upload, QrCode, CheckCircle2, XCircle } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import FaceDetection from "@/components/FaceDetection";
@@ -19,6 +19,12 @@ const Settings = () => {
   const { user } = useAuth();
   const isDriver = user?.type === 'driver';
   
+  const [verificationStatus, setVerificationStatus] = useState({
+    documentUploaded: false,
+    documentVerified: false,
+    faceVerified: false
+  });
+
   const [settings, setSettings] = useState({
     notifications: {
       rideRequests: true,
@@ -34,6 +40,21 @@ const Settings = () => {
     language: "English",
     currency: "USD"
   });
+
+  const handleDocumentUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Here you would typically upload the file to your server
+      // For now, we'll just simulate the upload
+      setTimeout(() => {
+        setVerificationStatus(prev => ({ ...prev, documentUploaded: true }));
+        toast({
+          title: "Document uploaded",
+          description: "Your document has been uploaded successfully."
+        });
+      }, 1500);
+    }
+  };
 
   const handleSave = () => {
     // Simulate API call
@@ -63,18 +84,125 @@ const Settings = () => {
             <h1 className="text-3xl font-bold">Settings</h1>
           </div>
 
-          {/* Face Verification (Only for Drivers) */}
+          {/* Driver Verification Section */}
           {isDriver && (
             <Card className="mb-6">
               <CardHeader>
                 <div className="flex items-center">
                   <Camera className="h-5 w-5 mr-2" />
-                  <CardTitle>Face Verification</CardTitle>
+                  <CardTitle>Driver Verification</CardTitle>
                 </div>
-                <CardDescription>Verify your identity for enhanced security</CardDescription>
+                <CardDescription>Complete your verification process to start accepting rides</CardDescription>
               </CardHeader>
-              <CardContent>
-                <FaceDetection />
+              <CardContent className="space-y-6">
+                {/* Document Upload Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Upload className="h-5 w-5" />
+                      <Label>Document Verification</Label>
+                    </div>
+                    {verificationStatus.documentUploaded ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <XCircle className="h-5 w-5 text-red-500" />
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Please upload a clear photo of your ID document (passport, driver's license, or national ID)
+                    </p>
+                    <div className="flex items-center space-x-4">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleDocumentUpload}
+                        className="hidden"
+                        id="document-upload"
+                      />
+                      <Label
+                        htmlFor="document-upload"
+                        className="cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+                      >
+                        Upload Document
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Face Verification Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Camera className="h-5 w-5" />
+                      <Label>Face Verification</Label>
+                    </div>
+                    {verificationStatus.faceVerified ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <XCircle className="h-5 w-5 text-red-500" />
+                    )}
+                  </div>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Complete your face verification using one of the following methods:
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Button
+                        variant="outline"
+                        className="flex flex-col items-center p-4 h-auto"
+                        onClick={() => setVerificationStatus(prev => ({ ...prev, faceVerified: true }))}
+                      >
+                        <QrCode className="h-8 w-8 mb-2" />
+                        <span>Scan QR Code</span>
+                        <span className="text-xs text-muted-foreground mt-1">Use your phone camera</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex flex-col items-center p-4 h-auto"
+                        onClick={() => {
+                          // Show the face detection component
+                          const faceDetectionElement = document.getElementById('face-detection');
+                          if (faceDetectionElement) {
+                            faceDetectionElement.style.display = 'block';
+                          }
+                        }}
+                      >
+                        <Camera className="h-8 w-8 mb-2" />
+                        <span>Use Camera</span>
+                        <span className="text-xs text-muted-foreground mt-1">Use your computer camera</span>
+                      </Button>
+                    </div>
+                    {verificationStatus.documentUploaded && (
+                      <div id="face-detection" className="mt-4" style={{ display: 'none' }}>
+                        <FaceDetection />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Verification Status */}
+                <div className="mt-4 p-4 bg-muted rounded-lg">
+                  <h4 className="font-medium mb-2">Verification Status</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span>Document Upload</span>
+                      {verificationStatus.documentUploaded ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <XCircle className="h-5 w-5 text-red-500" />
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Face Verification</span>
+                      {verificationStatus.faceVerified ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <XCircle className="h-5 w-5 text-red-500" />
+                      )}
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}
