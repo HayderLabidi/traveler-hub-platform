@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface LoadingPageProps {
-  duration?: number;
-  messages?: string[];
-  title?: string;
-  showProgress?: boolean;
-}
-
 const LoadingPage = ({
   duration = 2000,
   messages = [
@@ -19,7 +12,7 @@ const LoadingPage = ({
   ],
   title = "Welcome to RideShare",
   showProgress = true,
-}: LoadingPageProps) => {
+}) => {
   const [show, setShow] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [progress, setProgress] = useState(0);

@@ -1,24 +1,12 @@
-
 import { useState, useRef, useEffect } from "react";
 import { X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
-interface ChatMessage {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-}
-
-interface ChatbotDialogProps {
-  onClose: () => void;
-}
-
-const ChatbotDialog = ({ onClose }: ChatbotDialogProps) => {
+const ChatbotDialog = ({ onClose }) => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState([
     {
       id: "welcome",
       text: "Hello! Welcome to RideShare. How can I assist you today?",
@@ -26,13 +14,13 @@ const ChatbotDialog = ({ onClose }: ChatbotDialogProps) => {
       timestamp: new Date(),
     },
   ]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef(null);
 
   const handleSend = () => {
     if (input.trim() === "") return;
     
     // Add user message
-    const userMessage: ChatMessage = {
+    const userMessage = {
       id: Date.now().toString(),
       text: input,
       isUser: true,
@@ -55,7 +43,7 @@ const ChatbotDialog = ({ onClose }: ChatbotDialogProps) => {
       
       const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
       
-      const botMessage: ChatMessage = {
+      const botMessage = {
         id: Date.now().toString(),
         text: randomResponse,
         isUser: false,
@@ -66,7 +54,7 @@ const ChatbotDialog = ({ onClose }: ChatbotDialogProps) => {
     }, 1000);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSend();
     }
