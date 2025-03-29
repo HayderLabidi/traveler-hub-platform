@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const SettingsPage = () => {
   const { toast } = useToast();
-  
+
   const [generalSettings, setGeneralSettings] = useState({
     siteName: "RideShare",
     supportEmail: "support@rideshare.com",
@@ -79,7 +79,7 @@ const SettingsPage = () => {
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="general">
             <Card>
               <CardHeader>
@@ -90,49 +90,49 @@ const SettingsPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="siteName">Site Name</Label>
-                    <Input 
-                      id="siteName" 
+                    <Input
+                      id="siteName"
                       value={generalSettings.siteName}
-                      onChange={(e) => setGeneralSettings({...generalSettings, siteName: e.target.value})}
+                      onChange={(e) => setGeneralSettings({ ...generalSettings, siteName: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="supportEmail">Support Email</Label>
-                    <Input 
-                      id="supportEmail" 
+                    <Input
+                      id="supportEmail"
                       type="email"
                       value={generalSettings.supportEmail}
-                      onChange={(e) => setGeneralSettings({...generalSettings, supportEmail: e.target.value})}
+                      onChange={(e) => setGeneralSettings({ ...generalSettings, supportEmail: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="contactPhone">Contact Phone</Label>
-                    <Input 
-                      id="contactPhone" 
+                    <Input
+                      id="contactPhone"
                       value={generalSettings.contactPhone}
-                      onChange={(e) => setGeneralSettings({...generalSettings, contactPhone: e.target.value})}
+                      onChange={(e) => setGeneralSettings({ ...generalSettings, contactPhone: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="platformFee">Platform Fee (%)</Label>
-                    <Input 
-                      id="platformFee" 
+                    <Input
+                      id="platformFee"
                       type="number"
                       value={generalSettings.platformFee}
-                      onChange={(e) => setGeneralSettings({...generalSettings, platformFee: e.target.value})}
+                      onChange={(e) => setGeneralSettings({ ...generalSettings, platformFee: e.target.value })}
                     />
                   </div>
                 </div>
-                
+
                 <div className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <Switch 
+                    <Switch
                       id="maintenanceMode"
                       checked={generalSettings.maintenanceMode}
-                      onCheckedChange={(checked) => setGeneralSettings({...generalSettings, maintenanceMode: checked})}
+                      onCheckedChange={(checked) => setGeneralSettings({ ...generalSettings, maintenanceMode: checked })}
                     />
                     <Label htmlFor="maintenanceMode" className="font-medium">Maintenance Mode</Label>
                   </div>
@@ -154,7 +154,7 @@ const SettingsPage = () => {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="payment">
             <Card>
               <CardHeader>
@@ -165,48 +165,48 @@ const SettingsPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="stripePK">Stripe Public Key</Label>
-                    <Input 
-                      id="stripePK" 
+                    <Input
+                      id="stripePK"
                       value={paymentSettings.stripePK}
-                      onChange={(e) => setPaymentSettings({...paymentSettings, stripePK: e.target.value})}
+                      onChange={(e) => setPaymentSettings({ ...paymentSettings, stripePK: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="driverPayout">Driver Payout (%)</Label>
-                    <Input 
-                      id="driverPayout" 
+                    <Input
+                      id="driverPayout"
                       type="number"
                       value={paymentSettings.driverPayout}
-                      onChange={(e) => setPaymentSettings({...paymentSettings, driverPayout: e.target.value})}
+                      onChange={(e) => setPaymentSettings({ ...paymentSettings, driverPayout: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="minimumFare">Minimum Fare ($)</Label>
-                    <Input 
-                      id="minimumFare" 
+                    <Input
+                      id="minimumFare"
                       value={paymentSettings.minimumFare}
-                      onChange={(e) => setPaymentSettings({...paymentSettings, minimumFare: e.target.value})}
+                      onChange={(e) => setPaymentSettings({ ...paymentSettings, minimumFare: e.target.value })}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="cancellationFee">Cancellation Fee ($)</Label>
-                    <Input 
-                      id="cancellationFee" 
+                    <Input
+                      id="cancellationFee"
                       value={paymentSettings.cancellationFee}
-                      onChange={(e) => setPaymentSettings({...paymentSettings, cancellationFee: e.target.value})}
+                      onChange={(e) => setPaymentSettings({ ...paymentSettings, cancellationFee: e.target.value })}
                     />
                   </div>
                 </div>
-                
+
                 <div className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <Switch 
+                    <Switch
                       id="autoPayouts"
                       checked={paymentSettings.autoPayouts}
-                      onCheckedChange={(checked) => setPaymentSettings({...paymentSettings, autoPayouts: checked})}
+                      onCheckedChange={(checked) => setPaymentSettings({ ...paymentSettings, autoPayouts: checked })}
                     />
                     <Label htmlFor="autoPayouts" className="font-medium">Automatic Driver Payouts</Label>
                   </div>
@@ -223,7 +223,7 @@ const SettingsPage = () => {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="notifications">
             <Card>
               <CardHeader>
@@ -239,13 +239,13 @@ const SettingsPage = () => {
                         Send automated emails for important system events
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="emailNotifications"
                       checked={notificationSettings.emailNotifications}
-                      onCheckedChange={(checked) => setNotificationSettings({...notificationSettings, emailNotifications: checked})}
+                      onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, emailNotifications: checked })}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="pushNotifications" className="font-medium">Push Notifications</Label>
@@ -253,13 +253,13 @@ const SettingsPage = () => {
                         Send push notifications to mobile app users
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="pushNotifications"
                       checked={notificationSettings.pushNotifications}
-                      onCheckedChange={(checked) => setNotificationSettings({...notificationSettings, pushNotifications: checked})}
+                      onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, pushNotifications: checked })}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="smsNotifications" className="font-medium">SMS Notifications</Label>
@@ -267,13 +267,13 @@ const SettingsPage = () => {
                         Send SMS for critical alerts (additional charges apply)
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="smsNotifications"
                       checked={notificationSettings.smsNotifications}
-                      onCheckedChange={(checked) => setNotificationSettings({...notificationSettings, smsNotifications: checked})}
+                      onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, smsNotifications: checked })}
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="marketingEmails" className="font-medium">Marketing Emails</Label>
@@ -281,10 +281,10 @@ const SettingsPage = () => {
                         Send promotional emails and newsletters to users
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       id="marketingEmails"
                       checked={notificationSettings.marketingEmails}
-                      onCheckedChange={(checked) => setNotificationSettings({...notificationSettings, marketingEmails: checked})}
+                      onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, marketingEmails: checked })}
                     />
                   </div>
                 </div>
@@ -297,7 +297,7 @@ const SettingsPage = () => {
               </CardFooter>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="security">
             <Card>
               <CardHeader>
