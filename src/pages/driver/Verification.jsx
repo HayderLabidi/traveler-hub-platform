@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Camera, CheckCircle2, XCircle } from "lucide-react";
+import { Upload, Camera, CheckCircle2, XCircle, Smartphone, RefreshCcw } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
+import { QRCodeSVG } from "qrcode.react";
+import Webcam from "react-webcam";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Verification = () => {
   const [documents, setDocuments] = useState({
@@ -15,6 +18,9 @@ const Verification = () => {
   });
   const [kycSelfie, setKycSelfie] = useState(null);
   const [verificationStatus, setVerificationStatus] = useState("pending"); // pending, verified, rejected
+  const [showWebcam, setShowWebcam] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+  const webcamRef = useRef(null);
   const { toast } = useToast();
 
   const handleDocumentUpload = (type, file) => {
@@ -52,6 +58,20 @@ const Verification = () => {
     }
   };
 
+  const captureWebcamPhoto = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (imageSrc) {
+      // Convert base64 to file
+      fetch(imageSrc)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], "webcam-photo.jpg", { type: "image/jpeg" });
+          handleKycSelfie(file);
+          setShowWebcam(false);
+        });
+    }
+  };
+
   const handleSubmit = async () => {
     // Here you would typically send the documents and KYC selfie to your backend
     // For now, we'll simulate a successful verification
@@ -61,6 +81,8 @@ const Verification = () => {
       description: "Your documents have been submitted for verification.",
     });
   };
+
+  const mobileVerificationUrl = "your-mobile-verification-url"; // Replace with your actual mobile verification URL
 
   return (
     <DashboardLayout>
@@ -187,55 +209,71 @@ const Verification = () => {
             </CardContent>
           </Card>
 
-          {/* KYC Selfie */}
+          {/* Face Verification */}
           <Card>
             <CardHeader>
-              <CardTitle>KYC Selfie</CardTitle>
-              <CardDescription>Take a selfie with your ID to verify your identity</CardDescription>
+              <CardTitle>Face Verification</CardTitle>
+              <CardDescription>Complete your face verification using one of the following methods</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    capture="user"
-                    onChange={(e) => handleKycSelfie(e.target.files[0])}
-                    className="hidden"
-                    id="kyc-selfie"
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => document.getElementById("kyc-selfie").click()}
-                    className="w-full"
-                  >
-                    <Camera className="w-4 h-4 mr-2" />
-                    {kycSelfie ? "Retake Selfie" : "Take KYC Selfie"}
-                  </Button>
-                  {kycSelfie && (
-                    <span className="text-sm text-green-500">✓ Uploaded</span>
+              <Tabs defaultValue="webcam" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="webcam">Use Webcam</TabsTrigger>
+                  <TabsTrigger value="qr">Use Phone (QR Code)</TabsTrigger>
+                </TabsList>
+                <TabsContent value="webcam" className="space-y-4">
+                  {showWebcam ? (
+                    <div className="space-y-4">
+                      <div className="relative rounded-lg overflow-hidden">
+                        <Webcam
+                          audio={false}
+                          ref={webcamRef}
+                          screenshotFormat="image/jpeg"
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="flex gap-4">
+                        <Button onClick={captureWebcamPhoto} className="flex-1">
+                          <Camera className="w-4 h-4 mr-2" />
+                          Take Photo
+                        </Button>
+                        <Button variant="outline" onClick={() => setShowWebcam(false)} className="flex-1">
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Button onClick={() => setShowWebcam(true)} className="w-full">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Start Camera
+                    </Button>
                   )}
-                </div>
-                <div className="bg-muted p-4 rounded-lg">
-                  <h4 className="font-medium mb-2">Instructions:</h4>
-                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Hold your ID document clearly in front of you</li>
-                    <li>Ensure your face and the ID are clearly visible</li>
-                    <li>Make sure there's good lighting</li>
-                    <li>Keep the camera steady</li>
-                  </ul>
-                </div>
-              </div>
+                </TabsContent>
+                <TabsContent value="qr" className="space-y-4">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="p-4 bg-white rounded-lg">
+                      <QRCodeSVG value={mobileVerificationUrl} size={200} />
+                    </div>
+                    <p className="text-sm text-center text-muted-foreground">
+                      Scan this QR code with your phone to complete face verification
+                    </p>
+                    <Button variant="outline" className="w-full">
+                      <RefreshCcw className="w-4 h-4 mr-2" />
+                      Generate New QR Code
+                    </Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
 
           {/* Submit Button */}
           <Button
-            className="w-full"
             onClick={handleSubmit}
+            className="w-full"
             disabled={!documents.license || !documents.insurance || !documents.registration || !kycSelfie}
           >
-            Submit for Verification
+            Submit Verification
           </Button>
         </div>
       </div>
@@ -243,4 +281,4 @@ const Verification = () => {
   );
 };
 
-export default Verification; 
+export default Verification;

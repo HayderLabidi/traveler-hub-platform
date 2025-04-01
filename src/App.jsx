@@ -8,43 +8,41 @@ import { AuthProvider, useAuth } from "@/providers/AuthProvider";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
 import LoadingPage from "@/components/LoadingPage";
 
-// Public pages
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import FAQ from "./pages/FAQ";
+// Shared Pages
+import Index from "@/pages/shared/Index";
+import NotFound from "@/pages/shared/NotFound";
+import About from "@/pages/shared/About";
+import Contact from "@/pages/shared/Contact";
+import FAQ from "@/pages/shared/FAQ";
+import Login from "@/pages/shared/Login";
+import ForgotPassword from "@/pages/shared/ForgotPassword";
+import Settings from "@/pages/shared/Settings";
+import Profile from "@/pages/shared/Profile";
+import PaymentMethods from "@/pages/shared/PaymentMethods";
 
-// Auth pages
-import Login from "./pages/auth/Login";
-import DriverRegister from "./pages/auth/DriverRegister";
-import PassengerRegister from "./pages/auth/PassengerRegister";
-import ForgotPassword from "./pages/auth/ForgotPassword";
+// Passenger Pages
+import PassengerRegister from "@/pages/passenger/Register";
+import PassengerDashboard from "@/pages/passenger/Dashboard";
+import PassengerProfile from "@/pages/passenger/Profile";
+import BookRide from "@/pages/passenger/BookRide";
+import ScheduleRide from "@/pages/passenger/ScheduleRide";
+import Blog from "@/pages/passenger/Blog";
+import HelpCentre from "@/pages/passenger/HelpCentre";
 
-// Dashboard pages
-import DriverDashboard from "./pages/dashboard/DriverDashboard";
-import PassengerDashboard from "./pages/dashboard/PassengerDashboard";
-import AdminDashboard from "./pages/dashboard/AdminDashboard";
-import Profile from "./pages/dashboard/Profile";
-import Settings from "./pages/dashboard/Settings";
-import PaymentMethods from "./pages/dashboard/PaymentMethods";
-import BookRide from "./pages/passenger/BookRide";
-import PassengerProfile from "./pages/dashboard/PassengerProfile";
-import ScheduleRide from "./pages/passenger/ScheduleRide";
-import Blog from "./pages/passenger/Blog";
-import HelpCentre from "./pages/passenger/HelpCentre";
+// Driver Pages
+import DriverRegister from "@/pages/driver/Register";
+import DriverDashboard from "@/pages/driver/Dashboard";
+import Verification from "@/pages/driver/Verification";
 
-// Admin pages
-import Users from "./pages/admin/Users";
-import Drivers from "./pages/admin/Drivers";
-import Rides from "./pages/admin/Rides";
-import Payments from "./pages/admin/Payments";
-import Support from "./pages/admin/Support";
-import AdminSettings from "./pages/admin/Settings";
-import DriverVerifications from "./pages/admin/DriverVerifications";
-
-// New pages
-import Verification from "./pages/driver/Verification";
+// Admin Pages
+import AdminDashboard from "@/pages/admin/Dashboard";
+import Users from "@/pages/admin/Users";
+import Drivers from "@/pages/admin/Drivers";
+import Rides from "@/pages/admin/Rides";
+import Payments from "@/pages/admin/Payments";
+import Support from "@/pages/admin/Support";
+import AdminSettings from "@/pages/admin/Settings";
+import DriverVerifications from "@/pages/admin/DriverVerifications";
 
 const queryClient = new QueryClient();
 
