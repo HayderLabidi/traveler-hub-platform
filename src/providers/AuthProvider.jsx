@@ -1,24 +1,11 @@
-import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
-type UserType = 'passenger' | 'driver' | 'admin' | null;
+const AuthContext = createContext(undefined);
 
-type AuthContextType = {
-  user: {
-    type: UserType;
-    email: string;
-  } | null;
-  login: (email: string, type: UserType) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-};
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ type: UserType; email: string } | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  const login = (email: string, type: UserType) => {
+  const login = (email, type) => {
     const userData = { email, type };
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -91,10 +78,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};
