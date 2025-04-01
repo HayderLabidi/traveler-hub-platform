@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,8 +33,6 @@ import PassengerProfile from "./pages/dashboard/PassengerProfile";
 import ScheduleRide from "./pages/passenger/ScheduleRide";
 import Blog from "./pages/passenger/Blog";
 import HelpCentre from "./pages/passenger/HelpCentre";
-import PassengerSettings from "./pages/passenger/Settings";
-import PassengerEditProfile from "./pages/passenger/EditProfile";
 
 // Admin pages
 import Users from "./pages/admin/Users";
@@ -113,16 +110,6 @@ const AppRoutes = () => {
       <Route path="/passenger/profile" element={
         <ProtectedRoute allowedUserTypes={['passenger']}>
           <PassengerProfile />
-        </ProtectedRoute>
-      } />
-      <Route path="/passenger/edit-profile" element={
-        <ProtectedRoute allowedUserTypes={['passenger']}>
-          <PassengerEditProfile />
-        </ProtectedRoute>
-      } />
-      <Route path="/passenger/settings" element={
-        <ProtectedRoute allowedUserTypes={['passenger']}>
-          <PassengerSettings />
         </ProtectedRoute>
       } />
       <Route path="/passenger/schedule" element={
