@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Bell, Lock, Globe, CreditCard } from "lucide-react";
+import { ArrowLeft, Save, Bell, Lock, Globe, CreditCard, User, Edit } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import DashboardLayout from "@/components/DashboardLayout";
