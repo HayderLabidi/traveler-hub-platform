@@ -28,6 +28,7 @@ import BookRide from "@/pages/passenger/BookRide";
 import ScheduleRide from "@/pages/passenger/ScheduleRide";
 import Blog from "@/pages/passenger/Blog";
 import HelpCentre from "@/pages/passenger/HelpCentre";
+import PassengerSettings from "@/pages/passenger/Settings";
 
 // Driver Pages
 import DriverRegister from "@/pages/driver/Register";
@@ -108,6 +109,11 @@ const AppRoutes = () => {
       <Route path="/passenger/profile" element={
         <ProtectedRoute allowedUserTypes={['passenger']}>
           <PassengerProfile />
+        </ProtectedRoute>
+      } />
+      <Route path="/passenger/settings" element={
+        <ProtectedRoute allowedUserTypes={['passenger']}>
+          <PassengerSettings />
         </ProtectedRoute>
       } />
       <Route path="/passenger/schedule" element={
