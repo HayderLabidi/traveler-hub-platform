@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Moon, Sun, LogOut, User, Home, Settings } from "lucide-react";
+import { Menu, X, Moon, Sun, LogOut, User, Home, Settings, BellRing, Check } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import {
   DropdownMenu,
@@ -12,12 +13,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 
 const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "New ride offer", message: "Driver Michael is nearby", time: "5 min ago", read: false },
+    { id: 2, title: "Ride confirmed", message: "Your ride to Airport is confirmed", time: "1 hour ago", read: false },
+    { id: 3, title: "Payment processed", message: "Your payment of $25 was successful", time: "Yesterday", read: true },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,6 +47,20 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+    toast({
+      title: "Notifications",
+      description: "All notifications marked as read"
+    });
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ));
   };
 
   const getDashboardLink = () => {
@@ -89,6 +120,67 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                     </Link>
                   )}
                   <Link to="/faq" className="nav-link">FAQ</Link>
+                  
+                  {/* Notification Popover */}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                      >
+                        {unreadCount > 0 ? <BellRing size={20} /> : <BellRing size={20} />}
+                        {unreadCount > 0 && (
+                          <Badge 
+                            className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full"
+                          >
+                            {unreadCount}
+                          </Badge>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-0">
+                      <div className="p-4 border-b border-border flex justify-between items-center">
+                        <h4 className="font-medium">Notifications</h4>
+                        {unreadCount > 0 && (
+                          <Button variant="ghost" size="sm" onClick={markAllAsRead} className="flex items-center">
+                            <Check className="h-4 w-4 mr-1" />
+                            Mark all as read
+                          </Button>
+                        )}
+                      </div>
+                      <div className="max-h-80 overflow-y-auto">
+                        {notifications.length > 0 ? (
+                          <div className="divide-y divide-border">
+                            {notifications.map((notification) => (
+                              <div 
+                                key={notification.id} 
+                                className={`p-4 hover:bg-muted cursor-pointer flex items-start ${notification.read ? 'opacity-70' : 'bg-muted/50'}`}
+                                onClick={() => markAsRead(notification.id)}
+                              >
+                                <div className="w-2 h-2 mt-1.5 rounded-full mr-3 flex-shrink-0 bg-primary" style={{ opacity: notification.read ? 0 : 1 }} />
+                                <div className="flex-1">
+                                  <div className="font-medium mb-0.5">{notification.title}</div>
+                                  <p className="text-sm text-muted-foreground mb-1">{notification.message}</p>
+                                  <span className="text-xs text-muted-foreground">{notification.time}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="py-8 text-center text-muted-foreground">
+                            No notifications
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2 border-t border-border">
+                        <Button variant="ghost" size="sm" className="w-full">
+                          View all notifications
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
                   <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                     {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   </button>
@@ -129,6 +221,61 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
           </div>
 
           <div className="md:hidden flex items-center">
+            {isAuthenticated && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative p-2 mr-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
+                    {unreadCount > 0 ? <BellRing size={20} /> : <BellRing size={20} />}
+                    {unreadCount > 0 && (
+                      <Badge 
+                        className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-0">
+                  <div className="p-3 border-b border-border flex justify-between items-center">
+                    <h4 className="font-medium">Notifications</h4>
+                    {unreadCount > 0 && (
+                      <Button variant="ghost" size="sm" onClick={markAllAsRead} className="flex items-center text-xs">
+                        <Check className="h-3 w-3 mr-1" />
+                        Mark all as read
+                      </Button>
+                    )}
+                  </div>
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.length > 0 ? (
+                      <div className="divide-y divide-border">
+                        {notifications.map((notification) => (
+                          <div 
+                            key={notification.id} 
+                            className={`p-3 hover:bg-muted cursor-pointer flex items-start ${notification.read ? 'opacity-70' : 'bg-muted/50'}`}
+                            onClick={() => markAsRead(notification.id)}
+                          >
+                            <div className="w-2 h-2 mt-1.5 rounded-full mr-2 flex-shrink-0 bg-primary" style={{ opacity: notification.read ? 0 : 1 }} />
+                            <div className="flex-1">
+                              <div className="font-medium text-sm mb-0.5">{notification.title}</div>
+                              <p className="text-xs text-muted-foreground mb-1">{notification.message}</p>
+                              <span className="text-xs text-muted-foreground">{notification.time}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-6 text-center text-muted-foreground text-sm">
+                        No notifications
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
             <button onClick={toggleDarkMode} className="p-2 mr-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
