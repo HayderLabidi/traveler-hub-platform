@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -129,7 +128,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                         size="icon"
                         className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                       >
-                        {unreadCount > 0 ? <BellRing size={20} /> : <BellRing size={20} />}
+                        <BellRing size={20} />
                         {unreadCount > 0 && (
                           <Badge 
                             className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full"
@@ -229,7 +228,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                     size="icon"
                     className="relative p-2 mr-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                   >
-                    {unreadCount > 0 ? <BellRing size={20} /> : <BellRing size={20} />}
+                    <BellRing size={20} />
                     {unreadCount > 0 && (
                       <Badge 
                         className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full"
