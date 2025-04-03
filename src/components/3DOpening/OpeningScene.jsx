@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, useGLTF, Environment, Text3D, Float, Center } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Text3D, Float, Center } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch } from 'react-redux';
@@ -11,7 +11,7 @@ import { Car, Rocket } from 'lucide-react';
 function CarModel({ rotation }) {
   const carRef = useRef();
   
-  // Simple car shape made with geometry
+  // Animate the car rotation
   useFrame(() => {
     if (carRef.current) {
       carRef.current.rotation.y += 0.005;
@@ -117,7 +117,7 @@ const OpeningScene = ({ onStart }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-background"
+        className="fixed inset-0 z-50 bg-background w-full h-screen"
       >
         {isLoading ? (
           <div className="flex flex-col items-center justify-center h-full">
@@ -128,17 +128,19 @@ const OpeningScene = ({ onStart }) => {
           </div>
         ) : (
           <>
-            <Canvas shadows className="h-full w-full">
-              <Environment preset="city" />
-              <ambientLight intensity={0.5} />
-              <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-              <PerspectiveCamera makeDefault position={[0, 2, 10]} />
-              <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} />
-              
-              <CarModel rotation={Math.PI / 4} />
-              <RoadSection />
-              <FloatingText />
-            </Canvas>
+            <div className="h-screen w-full">
+              <Canvas shadows className="h-full w-full">
+                <color attach="background" args={['#111']} />
+                <ambientLight intensity={0.5} />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+                <PerspectiveCamera makeDefault position={[0, 2, 10]} />
+                <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} />
+                
+                <CarModel rotation={Math.PI / 4} />
+                <RoadSection />
+                <FloatingText />
+              </Canvas>
+            </div>
             
             <motion.div 
               className="absolute bottom-10 left-0 right-0 flex justify-center"

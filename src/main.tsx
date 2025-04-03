@@ -6,7 +6,13 @@ import './index.css';
 import store from './store/store';
 import AppEntrance from './components/3DOpening/AppEntrance';
 
-const root = createRoot(document.getElementById('root'));
+// Force clear localStorage for testing if needed
+// localStorage.removeItem('hasSeenIntro');
+
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
+
+const root = createRoot(rootElement);
 root.render(
   <Provider store={store}>
     <AppEntrance>
