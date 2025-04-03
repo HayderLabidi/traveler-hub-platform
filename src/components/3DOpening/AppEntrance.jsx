@@ -11,15 +11,29 @@ const AppEntrance = ({ children }) => {
   useEffect(() => {
     // Check if user has seen the intro before
     const hasSeenIntro = localStorage.getItem('hasSeenIntro');
+    
+    // Only hide intro if explicitly set to 'true'
     if (hasSeenIntro === 'true') {
       setShowIntro(false);
       setHasOpenedBefore(true);
+    } else {
+      // Ensure intro is shown if not seen before
+      setShowIntro(true);
+      // Initialize localStorage if it doesn't exist
+      if (!hasSeenIntro) {
+        localStorage.setItem('hasSeenIntro', 'false');
+      }
     }
+    
     // Mark component as initialized
     setIsInitialized(true);
+    
+    // Log the state for debugging
+    console.log('Initial localStorage state:', hasSeenIntro);
   }, []);
   
   const handleStart = () => {
+    console.log('Starting app, setting hasSeenIntro to true');
     setShowIntro(false);
     // Save that user has seen intro
     localStorage.setItem('hasSeenIntro', 'true');
@@ -27,7 +41,9 @@ const AppEntrance = ({ children }) => {
 
   // Force reset the intro for testing purposes - remove localStorage item
   const resetIntro = () => {
+    console.log('Resetting intro');
     localStorage.removeItem('hasSeenIntro');
+    localStorage.setItem('hasSeenIntro', 'false');
     window.location.reload();
   };
   
@@ -51,14 +67,12 @@ const AppEntrance = ({ children }) => {
           >
             {children}
             {/* Dev button to reset intro - remove in production */}
-            {process.env.NODE_ENV === 'development' && (
-              <button 
-                onClick={resetIntro}
-                className="fixed bottom-2 right-2 bg-gray-800 text-xs text-white px-2 py-1 rounded opacity-50 hover:opacity-100"
-              >
-                Reset Intro
-              </button>
-            )}
+            <button 
+              onClick={resetIntro}
+              className="fixed bottom-2 right-2 bg-gray-800 text-xs text-white px-2 py-1 rounded opacity-50 hover:opacity-100 z-50"
+            >
+              Reset Intro
+            </button>
           </motion.div>
         </AnimatePresence>
       )}
