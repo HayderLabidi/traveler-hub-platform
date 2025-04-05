@@ -9,27 +9,14 @@ const AppEntrance = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   
   useEffect(() => {
-    // Check if user has seen the intro before
-    const hasSeenIntro = localStorage.getItem('hasSeenIntro');
-    
-    // Only hide intro if explicitly set to 'true'
-    if (hasSeenIntro === 'true') {
-      setShowIntro(false);
-      setHasOpenedBefore(true);
-    } else {
-      // Ensure intro is shown if not seen before
-      setShowIntro(true);
-      // Initialize localStorage if it doesn't exist
-      if (!hasSeenIntro) {
-        localStorage.setItem('hasSeenIntro', 'false');
-      }
-    }
+    // Force localStorage to be 'false' initially to ensure intro always shows on reload
+    localStorage.setItem('hasSeenIntro', 'false');
     
     // Mark component as initialized
     setIsInitialized(true);
     
     // Log the state for debugging
-    console.log('Initial localStorage state:', hasSeenIntro);
+    console.log('Initial localStorage state:', localStorage.getItem('hasSeenIntro'));
   }, []);
   
   const handleStart = () => {
