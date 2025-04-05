@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import OpeningScene from './OpeningScene';
+import LoadingPage from '../LoadingPage';
 
 const AppEntrance = ({ children }) => {
   const [showIntro, setShowIntro] = useState(true);
@@ -55,7 +55,7 @@ const AppEntrance = ({ children }) => {
   return (
     <div className="relative h-full w-full">
       {showIntro ? (
-        <OpeningScene onStart={handleStart} />
+        <LoadingPage onComplete={handleStart} />
       ) : (
         <AnimatePresence>
           <motion.div
