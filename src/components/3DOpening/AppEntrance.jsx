@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import LoadingPage from '../LoadingPage';
+import OpeningScene from './OpeningScene';
 
 const AppEntrance = ({ children }) => {
   const [showIntro, setShowIntro] = useState(true);
@@ -9,14 +9,27 @@ const AppEntrance = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   
   useEffect(() => {
-    // Force localStorage to be 'false' initially to ensure intro always shows on reload
-    localStorage.setItem('hasSeenIntro', 'false');
+    // Check if user has seen the intro before
+    const hasSeenIntro = localStorage.getItem('hasSeenIntro');
+    
+    // Only hide intro if explicitly set to 'true'
+    if (hasSeenIntro === 'true') {
+      setShowIntro(false);
+      setHasOpenedBefore(true);
+    } else {
+      // Ensure intro is shown if not seen before
+      setShowIntro(true);
+      // Initialize localStorage if it doesn't exist
+      if (!hasSeenIntro) {
+        localStorage.setItem('hasSeenIntro', 'false');
+      }
+    }
     
     // Mark component as initialized
     setIsInitialized(true);
     
     // Log the state for debugging
-    console.log('Initial localStorage state:', localStorage.getItem('hasSeenIntro'));
+    console.log('Initial localStorage state:', hasSeenIntro);
   }, []);
   
   const handleStart = () => {
@@ -42,7 +55,7 @@ const AppEntrance = ({ children }) => {
   return (
     <div className="relative h-full w-full">
       {showIntro ? (
-        <LoadingPage onComplete={handleStart} />
+        <OpeningScene onStart={handleStart} />
       ) : (
         <AnimatePresence>
           <motion.div
