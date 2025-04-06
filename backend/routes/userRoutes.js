@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { check } = require('express-validator');
 const userController = require('../controllers/userController');
@@ -21,5 +22,9 @@ const loginValidation = [
 router.post('/register', registerValidation, userController.register);
 router.post('/login', loginValidation, userController.login);
 router.get('/me', auth, userController.getCurrentUser);
+
+// Admin routes
+router.get('/all', auth, userController.getAllUsers);
+router.get('/role/:role', auth, userController.getUsersByRole);
 
 module.exports = router;

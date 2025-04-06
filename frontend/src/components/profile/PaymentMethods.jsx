@@ -22,7 +22,7 @@ const PaymentMethods = ({ paymentMethods }) => {
         <CardDescription>Your saved payment methods</CardDescription>
       </CardHeader>
       <CardContent>
-        {paymentMethods.length > 0 ? (
+        {paymentMethods && paymentMethods.length > 0 ? (
           paymentMethods.map((method) => (
             <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg mb-2 hover:bg-muted/50 transition-colors">
               <div>

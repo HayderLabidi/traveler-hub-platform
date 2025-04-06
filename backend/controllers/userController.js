@@ -1,3 +1,4 @@
+
 const userService = require('../services/userService');
 const { validationResult } = require('express-validator');
 
@@ -55,6 +56,37 @@ class UserController {
     try {
       const user = await userService.getUserById(req.user.id);
       res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Admin: Get all users
+  async getAllUsers(req, res) {
+    try {
+      // Check if requestor is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Not authorized' });
+      }
+      
+      const users = await userService.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Admin: Get users by role
+  async getUsersByRole(req, res) {
+    try {
+      // Check if requestor is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Not authorized' });
+      }
+      
+      const { role } = req.params;
+      const users = await userService.getUsersByRole(role);
+      res.json(users);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

@@ -32,7 +32,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin', 'driver', 'passenger'],
     default: 'user'
-  }
+  },
+  paymentMethods: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PaymentMethod'
+  }]
 }, {
   timestamps: true
 });
