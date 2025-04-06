@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/providers/AuthProvider";
 
 const PassengerRegister = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const PassengerRegister = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { register } = useAuth();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -29,14 +31,11 @@ const PassengerRegister = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call with setTimeout
-    setTimeout(() => {
-      setIsLoading(false);
-      
+    try {
       // Basic validation
       if (formData.password !== formData.confirmPassword) {
         toast({
@@ -56,12 +55,22 @@ const PassengerRegister = () => {
         return;
       }
       
-      navigate("/passenger/dashboard");
-      toast({
-        title: "Success!",
-        description: "Your passenger account has been created",
-      });
-    }, 1000);
+      // Prepare user data
+      const userData = {
+        username: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        password: formData.password,
+        role: 'user'
+      };
+      
+      // Register user
+      await register(userData);
+    } catch (error) {
+      console.error("Registration error:", error);
+      // Toast notification is handled in the AuthProvider
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -174,4 +183,4 @@ const PassengerRegister = () => {
   );
 };
 
-export default PassengerRegister; 
+export default PassengerRegister;
