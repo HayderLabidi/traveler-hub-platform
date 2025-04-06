@@ -6,11 +6,6 @@ import './index.css';
 import store from './store/store';
 import AppEntrance from './components/3DOpening/AppEntrance';
 
-// Make sure the intro state is properly initialized
-if (localStorage.getItem('hasSeenIntro') === null) {
-  localStorage.setItem('hasSeenIntro', 'false');
-}
-
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
 
