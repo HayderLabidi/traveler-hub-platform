@@ -17,10 +17,27 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Adding token to request headers');
     }
+    console.log(`API Request: ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('API Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to handle errors
+api.interceptors.response.use(
+  (response) => {
+    console.log(`API Response Success: ${response.status}`);
+    return response;
+  },
+  (error) => {
+    console.error('API Response Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
 );
 
 export default api;

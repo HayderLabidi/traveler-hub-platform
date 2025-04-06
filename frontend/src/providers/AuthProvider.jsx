@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const userData = await authService.getCurrentUser();
+          console.log('Current user data:', userData);
           setUser(userData);
         } catch (error) {
           console.error('Authentication error:', error);
@@ -38,11 +39,14 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       const { user: userData, token } = await authService.login({ email, password });
       
+      console.log('Login response:', userData);
       setUser(userData);
       
       // Navigate to appropriate dashboard based on role
       if (userData.role === 'admin') {
         navigate('/admin/dashboard');
+      } else if (userData.role === 'driver') {
+        navigate('/driver/dashboard');
       } else {
         navigate('/passenger/dashboard');
       }
@@ -54,6 +58,7 @@ export const AuthProvider = ({ children }) => {
       
       return userData;
     } catch (error) {
+      console.error('Login error details:', error);
       toast({
         title: "Login failed",
         description: error.message || "Invalid credentials",

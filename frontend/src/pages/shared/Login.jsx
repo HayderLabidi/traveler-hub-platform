@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/providers/AuthProvider";
@@ -33,6 +32,8 @@ const Login = () => {
         setIsLoading(false);
         return;
       }
+      
+      console.log(`Attempting login with email: ${email}`);
       
       // Use the auth context to handle login
       await login(email, password);
