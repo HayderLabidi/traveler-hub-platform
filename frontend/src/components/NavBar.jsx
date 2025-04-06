@@ -64,7 +64,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
 
   const getDashboardLink = () => {
     if (!user) return "/login";
-    switch (user.type) {
+    switch (user.role) {
       case "passenger":
         return "/passenger/dashboard";
       case "driver":
@@ -112,7 +112,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                 </>
               ) : (
                 <>
-                  {user.type === "admin" && (
+                  {user.role === "admin" && (
                     <Link to="/" className="nav-link flex items-center">
                       <Home className="w-4 h-4 mr-1" />
                       Frontend
@@ -199,11 +199,11 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                         <User className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate(`/${user.type}/profile`)}>
+                      <DropdownMenuItem onClick={() => navigate(`/${user.role}/profile`)}>
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate(`/${user.type}/settings`)}>
+                      <DropdownMenuItem onClick={() => navigate(`/${user.role}/settings`)}>
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Settings</span>
                       </DropdownMenuItem>
@@ -320,7 +320,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
               </>
             ) : (
               <>
-                {user.type === "admin" && (
+                {user.role === "admin" && (
                   <Link to="/" className="block nav-link flex items-center">
                     <Home className="w-4 h-4 mr-1" />
                     Frontend
@@ -342,7 +342,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                   variant="outline" 
                   className="w-full mt-2"
                   onClick={() => {
-                    navigate(`/${user.type}/profile`);
+                    navigate(`/${user.role}/profile`);
                     setIsMenuOpen(false);
                   }}
                 >
@@ -353,7 +353,7 @@ const NavBar = ({ isDarkMode, toggleDarkMode }) => {
                   variant="outline" 
                   className="w-full mt-2"
                   onClick={() => {
-                    navigate(`/${user.type}/settings`);
+                    navigate(`/${user.role}/settings`);
                     setIsMenuOpen(false);
                   }}
                 >

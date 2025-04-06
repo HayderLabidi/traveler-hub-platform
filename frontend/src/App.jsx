@@ -54,7 +54,7 @@ const ProtectedRoute = ({ children, allowedUserTypes }) => {
     return <Navigate to="/login" />;
   }
   
-  if (allowedUserTypes && !allowedUserTypes.includes(user?.type)) {
+  if (allowedUserTypes && !allowedUserTypes.includes(user?.role)) {
     return <Navigate to="/" />;
   }
   

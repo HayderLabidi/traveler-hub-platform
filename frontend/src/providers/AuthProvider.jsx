@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -41,10 +40,18 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       
       // Navigate to appropriate dashboard based on role
-      if (userData.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/passenger/dashboard');
+      switch (userData.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'driver':
+          navigate('/driver/dashboard');
+          break;
+        case 'passenger':
+          navigate('/passenger/dashboard');
+          break;
+        default:
+          navigate('/');
       }
 
       toast({
@@ -78,10 +85,18 @@ export const AuthProvider = ({ children }) => {
       });
       
       // Navigate based on role
-      if (response.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/passenger/dashboard');
+      switch (response.user.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'driver':
+          navigate('/driver/dashboard');
+          break;
+        case 'passenger':
+          navigate('/passenger/dashboard');
+          break;
+        default:
+          navigate('/');
       }
       
       return response.user;
