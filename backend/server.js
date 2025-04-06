@@ -2,10 +2,12 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
+const photoRoutes = require('./routes/photoRoutes');
 
 const app = express();
 
@@ -17,8 +19,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/photos', photoRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

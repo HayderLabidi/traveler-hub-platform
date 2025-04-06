@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -19,9 +20,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  profilePhoto: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Photo'
+  },
+  photos: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Photo'
+  }],
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'driver', 'passenger'],
     default: 'user'
   }
 }, {
