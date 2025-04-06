@@ -1,12 +1,15 @@
-
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  username: {
+  firstName: {
     type: String,
     required: true,
-    unique: true,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    required: true,
     trim: true
   },
   email: {
@@ -15,6 +18,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true
+  },
+  phone: {
+    type: String,
+    required: true,
+    trim: true
   },
   password: {
     type: String,
@@ -30,8 +38,60 @@ const userSchema = new mongoose.Schema({
   }],
   role: {
     type: String,
-    enum: ['user', 'admin', 'driver', 'passenger'],
-    default: 'user'
+    enum: ['admin', 'driver', 'passenger'],
+    default: 'passenger'
+  },
+  // Driver specific fields
+  driverLicense: {
+    type: String,
+    required: function() {
+      return this.role === 'driver';
+    }
+  },
+  vehicleInfo: {
+    type: {
+      type: String,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    model: {
+      type: String,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    year: {
+      type: String,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    color: {
+      type: String,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    licensePlate: {
+      type: String,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    seatsAvailable: {
+      type: Number,
+      required: function() {
+        return this.role === 'driver';
+      }
+    },
+    carImage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Photo',
+      required: function() {
+        return this.role === 'driver';
+      }
+    }
   },
   paymentMethods: [{
     type: mongoose.Schema.Types.ObjectId,

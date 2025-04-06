@@ -57,10 +57,11 @@ const PassengerRegister = () => {
       
       // Prepare user data
       const userData = {
-        username: `${formData.firstName} ${formData.lastName}`,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-        role: 'user'
+        role: 'passenger'
       };
       
       // Register user

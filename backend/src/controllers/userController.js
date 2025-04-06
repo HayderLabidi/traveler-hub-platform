@@ -1,5 +1,5 @@
-
 const userService = require('../services/userService');
+const photoService = require('../services/photoService');
 const { validationResult } = require('express-validator');
 
 class UserController {
@@ -11,18 +11,61 @@ class UserController {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const user = await userService.createUser(req.body);
-      const token = userService.generateToken(user);
+      let userData = req.body;
       
-      res.status(201).json({
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        },
-        token
-      });
+      // If userData is sent as a string (from FormData), parse it
+      if (typeof userData === 'string') {
+        userData = JSON.parse(userData);
+      }
+
+      // Handle car image upload for drivers
+      if (req.file && userData.role === 'driver') {
+        const photoData = {
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          mimetype: req.file.mimetype,
+          path: req.file.path,
+          size: req.file.size
+        };
+        
+        // Create user first
+        const user = await userService.createUser(userData);
+        
+        // Upload car image
+        const photo = await photoService.uploadPhoto(photoData, user._id);
+        
+        // Update user with car image reference
+        user.vehicleInfo.carImage = photo._id;
+        await user.save();
+        
+        const token = userService.generateToken(user);
+        
+        res.status(201).json({
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+          },
+          token
+        });
+      } else {
+        // Regular user registration (passenger)
+        const user = await userService.createUser(userData);
+        const token = userService.generateToken(user);
+        
+        res.status(201).json({
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+          },
+          token
+        });
+      }
     } catch (error) {
       if (error.code === 11000) {
         return res.status(400).json({ message: 'User already exists' });

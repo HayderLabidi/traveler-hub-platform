@@ -1,11 +1,23 @@
-
 import api from './api';
 
 const authService = {
   // Register a new user
   register: async (userData) => {
     try {
-      const response = await api.post('/users/register', userData);
+      let response;
+      
+      // If userData is FormData (for driver registration with image)
+      if (userData instanceof FormData) {
+        response = await api.post('/users/register', userData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        // Regular registration (passenger)
+        response = await api.post('/users/register', userData);
+      }
+      
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
       }

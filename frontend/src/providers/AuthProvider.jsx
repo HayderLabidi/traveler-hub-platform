@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
       toast({
         title: "Success!",
-        description: `Welcome back, ${userData.username || email}`,
+        description: `Welcome back, ${userData.firstName || email}`,
       });
       
       return userData;

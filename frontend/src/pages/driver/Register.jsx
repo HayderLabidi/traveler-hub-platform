@@ -9,6 +9,7 @@ import AuthLayout from "@/components/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
 import { FormFileUpload } from "@/components/ui/form-file-upload";
 import { Car } from "lucide-react";
+import { useAuth } from "@/providers/AuthProvider";
 
 const DriverRegister = () => {
   const [formData, setFormData] = useState({
@@ -33,6 +34,7 @@ const DriverRegister = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { register } = useAuth();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -49,14 +51,11 @@ const DriverRegister = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call with setTimeout
-    setTimeout(() => {
-      setIsLoading(false);
-      
+    try {
       // Basic validation
       if (formData.password !== formData.confirmPassword) {
         toast({
@@ -94,15 +93,38 @@ const DriverRegister = () => {
         return;
       }
       
-      // In a real app, you would upload the car image and send all data to the server
-      // For now, we just simulate success
-      
-      navigate("/driver/dashboard");
-      toast({
-        title: "Success!",
-        description: "Your driver account has been created",
-      });
-    }, 1000);
+      // Prepare user data
+      const userData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        role: 'driver',
+        driverLicense: formData.driverLicense,
+        vehicleInfo: {
+          type: formData.vehicleType,
+          model: formData.vehicleModel,
+          year: formData.vehicleYear,
+          color: formData.vehicleColor,
+          licensePlate: formData.licensePlate,
+          seatsAvailable: formData.seatsAvailable
+        }
+      };
+
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      formDataToSend.append('carImage', carImage);
+      formDataToSend.append('userData', JSON.stringify(userData));
+
+      // Register driver using auth service
+      await register(formDataToSend);
+    } catch (error) {
+      console.error("Registration error:", error);
+      // Toast notification is handled in the AuthProvider
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

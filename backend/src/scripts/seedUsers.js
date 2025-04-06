@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const PaymentMethod = require('../models/PaymentMethod');
@@ -12,20 +11,35 @@ mongoose.connect(process.env.MONGODB_URI)
 // Test users data
 const testUsers = [
   {
-    username: 'adminuser',
+    firstName: 'Admin',
+    lastName: 'User',
     email: 'admin@example.com',
+    phone: '+1234567890',
     password: 'Password123!',
     role: 'admin'
   },
   {
-    username: 'driveruser',
+    firstName: 'Driver',
+    lastName: 'User',
     email: 'driver@example.com',
+    phone: '+1234567891',
     password: 'Password123!',
-    role: 'driver'
+    role: 'driver',
+    driverLicense: 'DL12345678',
+    vehicleInfo: {
+      type: 'sedan',
+      model: 'Toyota Camry',
+      year: '2020',
+      color: 'Silver',
+      licensePlate: 'ABC123',
+      seatsAvailable: 4
+    }
   },
   {
-    username: 'passengeruser',
+    firstName: 'Passenger',
+    lastName: 'User',
     email: 'passenger@example.com',
+    phone: '+1234567892',
     password: 'Password123!',
     role: 'passenger'
   }
