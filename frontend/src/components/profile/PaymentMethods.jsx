@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CreditCard } from "lucide-react";
+import { CreditCard, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PaymentMethods = ({ paymentMethods }) => {
@@ -22,16 +22,23 @@ const PaymentMethods = ({ paymentMethods }) => {
         <CardDescription>Your saved payment methods</CardDescription>
       </CardHeader>
       <CardContent>
-        {paymentMethods.map((method) => (
-          <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg mb-2">
-            <div>
-              <div className="font-medium">{method.type}</div>
-              <div className="text-sm text-muted-foreground">
-                •••• {method.last4} • Expires {method.expiry}
+        {paymentMethods && paymentMethods.length > 0 ? (
+          paymentMethods.map((method) => (
+            <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg mb-2 hover:bg-muted/50 transition-colors">
+              <div>
+                <div className="font-medium">{method.type}</div>
+                <div className="text-sm text-muted-foreground">
+                  •••• {method.last4} • Expires {method.expiry}
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
+          ))
+        ) : (
+          <div className="text-center py-4 text-muted-foreground">
+            No payment methods added
           </div>
-        ))}
+        )}
       </CardContent>
     </Card>
   );

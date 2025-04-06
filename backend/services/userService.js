@@ -1,3 +1,4 @@
+
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
@@ -44,11 +45,32 @@ class UserService {
   // Get user by ID
   async getUserById(id) {
     try {
-      const user = await User.findById(id).select('-password');
+      const user = await User.findById(id)
+        .select('-password')
+        .populate('paymentMethods');
+      
       if (!user) {
         throw new Error('User not found');
       }
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get all users (admin function)
+  async getAllUsers() {
+    try {
+      return await User.find().select('-password');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get users by role
+  async getUsersByRole(role) {
+    try {
+      return await User.find({ role }).select('-password');
     } catch (error) {
       throw error;
     }
