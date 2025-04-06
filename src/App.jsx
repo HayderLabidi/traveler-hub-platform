@@ -6,8 +6,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DarkModeProvider } from "@/providers/DarkModeProvider";
 import { AuthProvider, useAuth } from "@/providers/AuthProvider";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
-import React, { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 // Shared Pages
 import Index from "@/pages/shared/Index";
@@ -194,28 +192,24 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <ErrorBoundary fallback={<div>Something went wrong</div>}>
-    <Suspense fallback={<div>Loading...</div>}>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <DarkModeProvider>
-            <AuthProvider>
-              <TooltipProvider>
-                <div className="min-h-screen bg-background">
-                  <div className="relative">
-                    <AppRoutes />
-                    <Toaster />
-                    <Sonner />
-                    <ChatbotButton />
-                  </div>
-                </div>
-              </TooltipProvider>
-            </AuthProvider>
-          </DarkModeProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
-    </Suspense>
-  </ErrorBoundary>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <DarkModeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <div className="min-h-screen bg-background">
+              <div className="relative">
+                <AppRoutes />
+                <Toaster />
+                <Sonner />
+                <ChatbotButton />
+              </div>
+            </div>
+          </TooltipProvider>
+        </AuthProvider>
+      </DarkModeProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
 );
 
 export default App;
