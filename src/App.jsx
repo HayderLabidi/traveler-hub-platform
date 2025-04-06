@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DarkModeProvider } from "@/providers/DarkModeProvider";
 import { AuthProvider, useAuth } from "@/providers/AuthProvider";
 import ChatbotButton from "@/components/Chatbot/ChatbotButton";
+import LoadingPage from "@/components/LoadingPage";
 
 // Shared Pages
 import Index from "@/pages/shared/Index";
@@ -198,6 +199,7 @@ const App = () => (
         <AuthProvider>
           <TooltipProvider>
             <div className="min-h-screen bg-background">
+              <LoadingPage />
               <div className="relative">
                 <AppRoutes />
                 <Toaster />

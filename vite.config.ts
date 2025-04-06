@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    port: 8080,
+    port: 3000,
     host: 'localhost', // This will restrict to localhost only
   },
   plugins: [
@@ -17,14 +17,6 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-    }
+    },
   },
-  optimizeDeps: {
-    exclude: ['@mediapipe/face_detection']
-  },
-  build: {
-    commonjsOptions: {
-      include: []
-    }
-  }
 }));
