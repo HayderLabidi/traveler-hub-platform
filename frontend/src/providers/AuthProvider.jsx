@@ -1,6 +1,8 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import authService from '@/services/authService';
 
 const AuthContext = createContext(undefined);
 
@@ -12,47 +14,92 @@ export const AuthProvider = ({ children }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check for saved user data on mount
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('user');
+    // Check for token and fetch user data on mount
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const userData = await authService.getCurrentUser();
+          setUser(userData);
+        } catch (error) {
+          console.error('Authentication error:', error);
+          // If token is invalid, clear it
+          authService.logout();
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
-  const login = (email, type) => {
-    const userData = { email, type };
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    
-    // Navigate to appropriate dashboard
-    switch (type) {
-      case 'passenger':
-        navigate('/passenger/dashboard');
-        break;
-      case 'driver':
-        navigate('/driver/dashboard');
-        break;
-      case 'admin':
+  const login = async (email, password) => {
+    try {
+      setIsLoading(true);
+      const { user: userData, token } = await authService.login({ email, password });
+      
+      setUser(userData);
+      
+      // Navigate to appropriate dashboard based on role
+      if (userData.role === 'admin') {
         navigate('/admin/dashboard');
-        break;
-    }
+      } else {
+        navigate('/passenger/dashboard');
+      }
 
-    toast({
-      title: "Success!",
-      description: `Welcome back, ${email}`,
-    });
+      toast({
+        title: "Success!",
+        description: `Welcome back, ${userData.username || email}`,
+      });
+      
+      return userData;
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: error.message || "Invalid credentials",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      setIsLoading(true);
+      const response = await authService.register(userData);
+      
+      setUser(response.user);
+      
+      toast({
+        title: "Success!",
+        description: "Your account has been created successfully",
+      });
+      
+      // Navigate based on role
+      if (response.user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/passenger/dashboard');
+      }
+      
+      return response.user;
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "Could not create account",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
+    authService.logout();
     setUser(null);
-    localStorage.removeItem('user');
     navigate('/');
     toast({
       title: "Logged out",
@@ -69,7 +116,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ 
       user, 
       login, 
-      logout, 
+      logout,
+      register,
       isAuthenticated: !!user,
       isLoading
     }}>

@@ -10,14 +10,16 @@
     "build:prod": "npm install --production"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "axios": "^1.8.4",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "mongoose": "^7.6.3",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
+    "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "morgan": "^1.10.0"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

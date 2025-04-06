@@ -1,9 +1,13 @@
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
+
 const connectDB = require('./src/config/database');
 const userRoutes = require('./src/routes/userRoutes');
+
 const app = express();
 
 // Connect to MongoDB
@@ -14,8 +18,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/photos', photoRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
