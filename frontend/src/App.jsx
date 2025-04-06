@@ -18,6 +18,7 @@ import ForgotPassword from "@/pages/shared/ForgotPassword";
 import Settings from "@/pages/shared/Settings";
 import Profile from "@/pages/shared/Profile";
 import PaymentMethods from "@/pages/shared/PaymentMethods";
+import RegisterChoice from "@/pages/shared/RegisterChoice";
 
 // Passenger Pages
 import PassengerRegister from "@/pages/passenger/Register";
@@ -72,7 +73,7 @@ const AppRoutes = () => {
 
       {/* Auth routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<PassengerRegister />} />
+      <Route path="/register" element={<RegisterChoice />} />
       <Route path="/driver/register" element={<DriverRegister />} />
       <Route path="/passenger/register" element={<PassengerRegister />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
