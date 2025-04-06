@@ -1,14 +1,18 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useDarkMode } from "@/providers/DarkModeProvider";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Upload, User, Phone, Mail, CreditCard, Camera, History, Star } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
+import { useDarkMode } from "@/providers/DarkModeProvider";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+
+// Importing our new components
+import ProfilePhoto from "@/components/profile/ProfilePhoto";
+import PersonalInformation from "@/components/profile/PersonalInformation";
+import Statistics from "@/components/profile/Statistics";
+import PaymentMethods from "@/components/profile/PaymentMethods";
 
 const PassengerProfile = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -48,18 +52,6 @@ const PassengerProfile = () => {
     }, 1500);
   };
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Simulate photo upload
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfile({...profile, photo: reader.result});
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -78,152 +70,29 @@ const PassengerProfile = () => {
             <h1 className="text-3xl font-bold">Passenger Profile</h1>
           </div>
 
-          {/* Profile Photo */}
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                <CardTitle>Profile Photo</CardTitle>
-              </div>
-              <CardDescription>Update your profile picture</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                    {profile.photo ? (
-                      <img
-                        src={profile.photo}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User className="h-12 w-12 text-gray-500" />
-                    )}
-                  </div>
-                  <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1 cursor-pointer">
-                    <Camera className="h-4 w-4" />
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                    />
-                  </label>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    Upload a new profile photo
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Recommended size: 400x400px
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Profile Photo Component */}
+          <ProfilePhoto 
+            photo={profile.photo} 
+            onPhotoChange={(newPhoto) => setProfile({...profile, photo: newPhoto})}
+          />
 
-          {/* Personal Information */}
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                <CardTitle>Personal Information</CardTitle>
-              </div>
-              <CardDescription>Update your personal details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={profile.name}
-                  onChange={(e) => setProfile({...profile, name: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={profile.email}
-                  onChange={(e) => setProfile({...profile, email: e.target.value})}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  value={profile.phone}
-                  onChange={(e) => setProfile({...profile, phone: e.target.value})}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          {/* Personal Information Component */}
+          <PersonalInformation 
+            profile={profile} 
+            onChange={setProfile}
+          />
 
-          {/* Statistics */}
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center">
-                <History className="h-5 w-5 mr-2" />
-                <CardTitle>Your Statistics</CardTitle>
-              </div>
-              <CardDescription>Your ride history and ratings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 text-yellow-400 mr-2" />
-                    <span className="text-sm text-muted-foreground">Rating</span>
-                  </div>
-                  <div className="text-2xl font-bold">{profile.rating}</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <History className="h-4 w-4 mr-2" />
-                    <span className="text-sm text-muted-foreground">Total Rides</span>
-                  </div>
-                  <div className="text-2xl font-bold">{profile.totalRides}</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <Mail className="h-4 w-4 mr-2" />
-                    <span className="text-sm text-muted-foreground">Member Since</span>
-                  </div>
-                  <div className="text-2xl font-bold">{profile.memberSince}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Statistics Component */}
+          <Statistics 
+            rating={profile.rating}
+            totalRides={profile.totalRides}
+            memberSince={profile.memberSince}
+          />
 
-          {/* Payment Methods */}
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2" />
-                  <CardTitle>Payment Methods</CardTitle>
-                </div>
-                <Button variant="outline" onClick={() => navigate("/payment-methods")}>
-                  Manage
-                </Button>
-              </div>
-              <CardDescription>Your saved payment methods</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {profile.paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg mb-2">
-                  <div>
-                    <div className="font-medium">{method.type}</div>
-                    <div className="text-sm text-muted-foreground">
-                      •••• {method.last4} • Expires {method.expiry}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          {/* Payment Methods Component */}
+          <PaymentMethods 
+            paymentMethods={profile.paymentMethods}
+          />
 
           {/* Save Button */}
           <div className="flex justify-end">
