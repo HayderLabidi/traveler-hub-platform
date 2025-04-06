@@ -1,5 +1,4 @@
-
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Text3D, Float, Center } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,6 @@ import { Car, Rocket } from 'lucide-react';
 function CarModel({ rotation }) {
   const carRef = useRef();
   
-  // Animate the car rotation
   useFrame(() => {
     if (carRef.current) {
       carRef.current.rotation.y += 0.005;
@@ -20,19 +18,16 @@ function CarModel({ rotation }) {
 
   return (
     <group ref={carRef} position={[0, -0.5, 0]} rotation={[0, rotation, 0]}>
-      {/* Car body */}
       <mesh position={[0, 0.4, 0]}>
         <boxGeometry args={[2, 0.7, 4]} />
         <meshStandardMaterial color="#3b82f6" metalness={0.8} roughness={0.2} />
       </mesh>
       
-      {/* Car top */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[1.8, 0.6, 2]} />
         <meshStandardMaterial color="#3b82f6" metalness={0.8} roughness={0.2} />
       </mesh>
       
-      {/* Wheels */}
       <mesh position={[-1, 0, 1.5]}>
         <cylinderGeometry args={[0.4, 0.4, 0.3, 32]} rotation={[Math.PI / 2, 0, 0]} />
         <meshStandardMaterial color="#1f2937" metalness={0.5} roughness={0.7} />
@@ -50,7 +45,6 @@ function CarModel({ rotation }) {
         <meshStandardMaterial color="#1f2937" metalness={0.5} roughness={0.7} />
       </mesh>
       
-      {/* Headlights */}
       <mesh position={[0.7, 0.5, 1.9]}>
         <boxGeometry args={[0.2, 0.2, 0.1]} />
         <meshStandardMaterial color="#f3f4f6" emissive="#f3f4f6" emissiveIntensity={1} />
@@ -65,7 +59,7 @@ function CarModel({ rotation }) {
 
 function RoadSection() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]}>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]} receiveShadow>
       <planeGeometry args={[20, 20]} />
       <meshStandardMaterial color="#374151" />
       <mesh position={[0, 0, 0.01]}>
@@ -94,21 +88,63 @@ function FloatingText() {
   );
 }
 
+// Loading component
+function LoadingSpinner() {
+  return (
+    <div className="flex flex-col items-center justify-center h-full">
+      <div className="relative w-24 h-24">
+        <Car className="absolute inset-0 w-full h-full text-primary animate-pulse" />
+      </div>
+      <p className="mt-4 text-xl font-semibold animate-pulse">Loading Experience...</p>
+    </div>
+  );
+}
+
+const Scene = React.memo(({ onStart }) => {
+  return (
+    <div className="h-screen w-full">
+      <Canvas shadows className="h-full w-full">
+        <color attach="background" args={['#111']} />
+        <fog attach="fog" args={['#111', 5, 20]} />
+        <ambientLight intensity={0.5} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+        <PerspectiveCamera makeDefault position={[0, 2, 10]} />
+        <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} />
+        
+        <Suspense fallback={null}>
+          <CarModel rotation={Math.PI / 4} />
+          <RoadSection />
+          <FloatingText />
+        </Suspense>
+      </Canvas>
+      
+      <motion.div 
+        className="absolute bottom-10 left-0 right-0 flex justify-center"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <Button 
+          size="lg" 
+          onClick={onStart}
+          className="px-8 py-6 text-xl font-semibold tracking-wide shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group"
+        >
+          Start Journey
+          <Rocket className="ml-2 h-5 w-5 transition-transform group-hover:-translate-y-1" />
+        </Button>
+      </motion.div>
+    </div>
+  );
+});
+
 const OpeningScene = ({ onStart }) => {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    
-    // Set theme for better 3D appearance
     dispatch(setTheme('dark'));
-    
-    return () => {
-      clearTimeout(timer);
-    };
+    const timer = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(timer);
   }, [dispatch]);
 
   return (
@@ -120,44 +156,9 @@ const OpeningScene = ({ onStart }) => {
         className="fixed inset-0 z-50 bg-background w-full h-screen"
       >
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="relative w-24 h-24">
-              <Car className="absolute inset-0 w-full h-full text-primary animate-pulse" />
-            </div>
-            <p className="mt-4 text-xl font-semibold animate-pulse">Loading Experience...</p>
-          </div>
+          <LoadingSpinner />
         ) : (
-          <>
-            <div className="h-screen w-full">
-              <Canvas shadows className="h-full w-full">
-                <color attach="background" args={['#111']} />
-                <ambientLight intensity={0.5} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-                <PerspectiveCamera makeDefault position={[0, 2, 10]} />
-                <OrbitControls enableZoom={false} enablePan={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} />
-                
-                <CarModel rotation={Math.PI / 4} />
-                <RoadSection />
-                <FloatingText />
-              </Canvas>
-            </div>
-            
-            <motion.div 
-              className="absolute bottom-10 left-0 right-0 flex justify-center"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Button 
-                size="lg" 
-                onClick={onStart}
-                className="px-8 py-6 text-xl font-semibold tracking-wide shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 group"
-              >
-                Start Journey
-                <Rocket className="ml-2 h-5 w-5 transition-transform group-hover:-translate-y-1" />
-              </Button>
-            </motion.div>
-          </>
+          <Scene onStart={onStart} />
         )}
       </motion.div>
     </AnimatePresence>
