@@ -1,3 +1,4 @@
+
 const jwt = require('jsonwebtoken');
 
 const auth = async (req, res, next) => {
@@ -9,9 +10,16 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Ensure decoded contains the user ID and role
+    if (!decoded.id) {
+      return res.status(401).json({ message: 'Invalid token structure' });
+    }
+    
     req.user = decoded;
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     res.status(401).json({ message: 'Token is not valid' });
   }
 };

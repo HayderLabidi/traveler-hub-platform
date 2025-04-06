@@ -1,4 +1,3 @@
-
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
@@ -26,18 +25,35 @@ class UserService {
   // Login user
   async loginUser(email, password) {
     try {
+      console.log(`Attempting to find user with email: ${email}`);
       const user = await User.findOne({ email });
+      
       if (!user) {
+        console.log(`No user found with email: ${email}`);
         throw new Error('User not found');
       }
 
+      console.log(`User found, comparing password for: ${user.username}`);
       const isMatch = await user.comparePassword(password);
+      
       if (!isMatch) {
+        console.log('Password does not match');
         throw new Error('Invalid credentials');
       }
+      
+      console.log(`Login successful for user: ${user.username}, role: ${user.role}`);
       const token = this.generateToken(user);
-      return { user, token };
+      return { 
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role
+        }, 
+        token 
+      };
     } catch (error) {
+      console.error('Login error in service:', error.message);
       throw error;
     }
   }
@@ -45,15 +61,20 @@ class UserService {
   // Get user by ID
   async getUserById(id) {
     try {
+      console.log(`Getting user by ID: ${id}`);
       const user = await User.findById(id)
         .select('-password')
         .populate('paymentMethods');
       
       if (!user) {
+        console.log(`No user found with ID: ${id}`);
         throw new Error('User not found');
       }
+      
+      console.log(`Found user: ${user.username}, role: ${user.role}`);
       return user;
     } catch (error) {
+      console.error('Error getting user by ID:', error.message);
       throw error;
     }
   }
