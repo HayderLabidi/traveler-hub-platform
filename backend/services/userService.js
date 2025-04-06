@@ -34,7 +34,6 @@ class UserService {
       if (!isMatch) {
         throw new Error('Invalid credentials');
       }
-
       const token = this.generateToken(user);
       return { user, token };
     } catch (error) {
