@@ -54,7 +54,6 @@ const ProtectedRoute = ({ children, allowedUserTypes }) => {
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-  
   if (allowedUserTypes && !allowedUserTypes.includes(user?.role)) {
     return <Navigate to="/" />;
   }
@@ -70,7 +69,7 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<FAQ />} />
-
+      
       {/* Auth routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterChoice />} />
