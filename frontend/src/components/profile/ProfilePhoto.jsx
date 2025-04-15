@@ -1,17 +1,92 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Camera } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { User, Camera, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import api from "@/services/api";
 
-const ProfilePhoto = ({ photo, onPhotoChange }) => {
-  const handlePhotoUpload = (e) => {
+const ProfilePhoto = ({ userId }) => {
+  const [photo, setPhoto] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const { toast } = useToast();
+  
+  // Fetch profile photo on component mount
+  useState(() => {
+    const fetchProfilePhoto = async () => {
+      try {
+        const response = await api.get(`/photos/profile/${userId || ''}`);
+        if (response.data.success && response.data.photo) {
+          setPhoto(`${api.defaults.baseURL}${response.data.photo.url}`);
+        }
+      } catch (error) {
+        console.error("Error fetching profile photo:", error);
+      }
+    };
+    
+    fetchProfilePhoto();
+  }, [userId]);
+
+  const handleFileSelect = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onPhotoChange(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Only JPEG, PNG and GIF are allowed",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Maximum file size is 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Upload file
+    setIsUploading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('photo', file);
+      
+      const response = await api.post('/photos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      if (response.data.success) {
+        // Set as profile photo
+        const photoId = response.data.photo.id;
+        await api.put(`/photos/profile/${photoId}`);
+        
+        // Update UI
+        setPhoto(`${api.defaults.baseURL}${response.data.photo.url}`);
+        
+        toast({
+          title: "Photo uploaded",
+          description: "Your profile photo has been updated"
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      toast({
+        title: "Upload failed",
+        description: error.response?.data?.message || "Failed to upload photo",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -39,12 +114,17 @@ const ProfilePhoto = ({ photo, onPhotoChange }) => {
               )}
             </div>
             <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1 cursor-pointer">
-              <Camera className="h-4 w-4" />
+              {isUploading ? (
+                <Upload className="h-4 w-4 animate-pulse" />
+              ) : (
+                <Camera className="h-4 w-4" />
+              )}
               <input
                 type="file"
                 className="hidden"
                 accept="image/*"
-                onChange={handlePhotoUpload}
+                onChange={handleFileSelect}
+                disabled={isUploading}
               />
             </label>
           </div>
@@ -53,8 +133,13 @@ const ProfilePhoto = ({ photo, onPhotoChange }) => {
               Upload a new profile photo
             </p>
             <p className="text-xs text-muted-foreground">
-              Recommended size: 400x400px
+              Recommended size: 400x400px (max 5MB)
             </p>
+            {isUploading && (
+              <p className="text-xs text-primary mt-1">
+                Uploading...
+              </p>
+            )}
           </div>
         </div>
       </CardContent>
