@@ -35,7 +35,7 @@ class UserController {
         const photo = await photoService.uploadPhoto(photoData, user._id);
         
         // Update user with car image reference
-        user.vehicleInfo.carImage = photo._id;
+        user.driverInfo.vehicleInfo.carImage = photo._id;
         await user.save();
         
         const token = userService.generateToken(user);
@@ -83,7 +83,8 @@ class UserController {
       res.json({
         user: {
           id: user._id,
-          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
           role: user.role
         },
@@ -99,6 +100,47 @@ class UserController {
     try {
       const user = await userService.getUserById(req.user.id);
       res.json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Switch user role
+  async switchRole(req, res) {
+    try {
+      const { newRole } = req.body;
+      const user = await userService.switchUserRole(req.user.id, newRole);
+      
+      res.json({
+        message: `Role switched to ${newRole} successfully`,
+        user: {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          role: user.role
+        }
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  // Get top drivers
+  async getTopDrivers(req, res) {
+    try {
+      const drivers = await userService.getTopDrivers();
+      res.json(drivers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Get user statistics
+  async getUserStats(req, res) {
+    try {
+      const stats = await userService.getUserStats(req.params.userId);
+      res.json(stats);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

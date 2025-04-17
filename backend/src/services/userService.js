@@ -4,13 +4,25 @@ const jwt = require('jsonwebtoken');
 class UserService {
   // Create new user
   async createUser(userData) {
-    try {
-      const user = new User(userData);
-      await user.save();
-      return user;
-    } catch (error) {
-      throw error;
+    const user = new User(userData);
+    await user.save();
+    return user;
+  }
+
+  // Login user
+  async loginUser(email, password) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error('Invalid credentials');
     }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      throw new Error('Invalid credentials');
+    }
+
+    const token = this.generateToken(user);
+    return { user, token };
   }
 
   // Generate JWT token
@@ -22,60 +34,71 @@ class UserService {
     );
   }
 
-  // Login user
-  async loginUser(email, password) {
-    try {
-      console.log(`Attempting to find user with email: ${email}`);
-      const user = await User.findOne({ email });
-      
-      if (!user) {
-        console.log(`No user found with email: ${email}`);
-        throw new Error('User not found');
-      }
-
-      console.log(`User found, comparing password for: ${user.username}`);
-      const isMatch = await user.comparePassword(password);
-      
-      if (!isMatch) {
-        console.log('Password does not match');
-        throw new Error('Invalid credentials');
-      }
-      
-      console.log(`Login successful for user: ${user.username}, role: ${user.role}`);
-      const token = this.generateToken(user);
-      return { 
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        }, 
-        token 
-      };
-    } catch (error) {
-      console.error('Login error in service:', error.message);
-      throw error;
-    }
-  }
-
   // Get user by ID
   async getUserById(id) {
-    try {
-      console.log(`Getting user by ID: ${id}`);
-      const user = await User.findById(id)
-        .select('-password')
-        .populate('paymentMethods');
-      
-      if (!user) {
-        console.log(`No user found with ID: ${id}`);
-        throw new Error('User not found');
-      }
-      
-      console.log(`Found user: ${user.username}, role: ${user.role}`);
-      return user;
-    } catch (error) {
-      console.error('Error getting user by ID:', error.message);
-      throw error;
+    return await User.findById(id)
+      .populate('profilePhoto')
+      .populate('driverInfo.vehicleInfo.carImage')
+      .populate('passengerInfo.paymentMethods');
+  }
+
+  // Switch user role
+  async switchUserRole(userId, newRole) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // If switching to driver, ensure all required driver fields are present
+    if (newRole === 'driver' && !user.driverInfo) {
+      throw new Error('Driver information is required to switch to driver role');
+    }
+
+    // If switching to passenger, ensure all required passenger fields are present
+    if (newRole === 'passenger' && !user.passengerInfo) {
+      user.passengerInfo = {
+        paymentMethods: [],
+        rating: 0,
+        totalRides: 0,
+        favoriteDrivers: [],
+        savedLocations: []
+      };
+    }
+
+    user.role = newRole;
+    await user.save();
+    return user;
+  }
+
+  // Get top drivers
+  async getTopDrivers() {
+    return await User.find({ role: 'driver' })
+      .sort({ 'driverInfo.rating': -1 })
+      .limit(10)
+      .populate('profilePhoto')
+      .populate('driverInfo.vehicleInfo.carImage');
+  }
+
+  // Get user statistics
+  async getUserStats(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.role === 'driver') {
+      return {
+        totalRides: user.driverInfo.totalRides || 0,
+        rating: user.driverInfo.rating || 0,
+        isAvailable: user.driverInfo.isAvailable,
+        joinedDate: user.createdAt
+      };
+    } else {
+      return {
+        totalRides: user.passengerInfo.totalRides || 0,
+        rating: user.passengerInfo.rating || 0,
+        joinedDate: user.createdAt
+      };
     }
   }
 

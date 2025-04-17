@@ -32,71 +32,129 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Photo'
   },
-  photos: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Photo'
-  }],
   role: {
     type: String,
-    enum: ['admin', 'driver', 'passenger'],
+    enum: ['driver', 'passenger'],
     default: 'passenger'
   },
-  // Driver specific fields
-  driverLicense: {
-    type: String,
-    required: function() {
-      return this.role === 'driver';
-    }
+  isActive: {
+    type: Boolean,
+    default: true
   },
-  vehicleInfo: {
-    type: {
+  lastLogin: {
+    type: Date
+  },
+  // Driver specific fields (only used when role is 'driver')
+  driverInfo: {
+    driverLicense: {
       type: String,
       required: function() {
         return this.role === 'driver';
       }
     },
-    model: {
-      type: String,
-      required: function() {
-        return this.role === 'driver';
+    vehicleInfo: {
+      type: {
+        type: String,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      model: {
+        type: String,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      year: {
+        type: String,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      color: {
+        type: String,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      licensePlate: {
+        type: String,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      seatsAvailable: {
+        type: Number,
+        required: function() {
+          return this.role === 'driver';
+        }
+      },
+      carImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Photo',
+        required: function() {
+          return this.role === 'driver';
+        }
       }
     },
-    year: {
-      type: String,
-      required: function() {
-        return this.role === 'driver';
-      }
-    },
-    color: {
-      type: String,
-      required: function() {
-        return this.role === 'driver';
-      }
-    },
-    licensePlate: {
-      type: String,
-      required: function() {
-        return this.role === 'driver';
-      }
-    },
-    seatsAvailable: {
+    rating: {
       type: Number,
-      required: function() {
-        return this.role === 'driver';
-      }
+      default: 0
     },
-    carImage: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Photo',
-      required: function() {
-        return this.role === 'driver';
+    totalRides: {
+      type: Number,
+      default: 0
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true
+    },
+    currentLocation: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point'
+      },
+      coordinates: {
+        type: [Number],
+        default: [0, 0]
       }
     }
   },
-  paymentMethods: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'PaymentMethod'
-  }]
+  // Passenger specific fields (only used when role is 'passenger')
+  passengerInfo: {
+    paymentMethods: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'PaymentMethod'
+    }],
+    rating: {
+      type: Number,
+      default: 0
+    },
+    totalRides: {
+      type: Number,
+      default: 0
+    },
+    favoriteDrivers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    savedLocations: [{
+      name: String,
+      address: String,
+      coordinates: {
+        type: {
+          type: String,
+          enum: ['Point'],
+          default: 'Point'
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      }
+    }]
+  }
 }, {
   timestamps: true
 });
@@ -113,6 +171,19 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
+
+// Method to switch role
+userSchema.methods.switchRole = async function(newRole) {
+  if (!['driver', 'passenger'].includes(newRole)) {
+    throw new Error('Invalid role');
+  }
+  
+  this.role = newRole;
+  return this.save();
+};
+
+// Create 2dsphere index for geospatial queries
+userSchema.index({ 'driverInfo.currentLocation': '2dsphere' });
 
 const User = mongoose.model('User', userSchema);
 

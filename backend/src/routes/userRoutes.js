@@ -45,13 +45,13 @@ const registerValidation = [
 
 const driverValidation = [
   ...registerValidation,
-  check('driverLicense', 'Driver license is required').not().isEmpty(),
-  check('vehicleInfo.type', 'Vehicle type is required').not().isEmpty(),
-  check('vehicleInfo.model', 'Vehicle model is required').not().isEmpty(),
-  check('vehicleInfo.year', 'Vehicle year is required').not().isEmpty(),
-  check('vehicleInfo.color', 'Vehicle color is required').not().isEmpty(),
-  check('vehicleInfo.licensePlate', 'License plate is required').not().isEmpty(),
-  check('vehicleInfo.seatsAvailable', 'Number of seats is required').isInt({ min: 2, max: 6 })
+  check('driverInfo.driverLicense', 'Driver license is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.type', 'Vehicle type is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.model', 'Vehicle model is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.year', 'Vehicle year is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.color', 'Vehicle color is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.licensePlate', 'License plate is required').not().isEmpty(),
+  check('driverInfo.vehicleInfo.seatsAvailable', 'Number of seats is required').isInt({ min: 2, max: 6 })
 ];
 
 const loginValidation = [
@@ -59,11 +59,24 @@ const loginValidation = [
   check('password', 'Password is required').exists()
 ];
 
+const switchRoleValidation = [
+  check('newRole', 'New role is required').isIn(['driver', 'passenger'])
+];
+
 // Routes
 router.post('/register', upload.single('carImage'), registerValidation, userController.register);
-router.post('/register/driver', upload.single('carImage'), driverValidation, userController.register);
 router.post('/login', loginValidation, userController.login);
 router.get('/me', auth, userController.getCurrentUser);
+
+// Role switching
+router.post('/switch-role', auth, switchRoleValidation, userController.switchRole);
+
+// Driver specific routes
+router.post('/register/driver', upload.single('carImage'), driverValidation, userController.register);
+router.get('/drivers/top', auth, userController.getTopDrivers);
+
+// User statistics
+router.get('/:userId/stats', auth, userController.getUserStats);
 
 // Admin routes
 router.get('/all', auth, userController.getAllUsers);
