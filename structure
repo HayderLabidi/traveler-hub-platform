@@ -1,0 +1,39 @@
+PFE/
+├── backend/
+│   ├── src/
+│   │   ├── config/         # Configuration files
+│   │   ├── controllers/    # Route controllers
+│   │   ├── middleware/     # Custom middleware
+│   │   ├── models/         # Database models
+│   │   ├── routes/         # API routes
+│   │   ├── services/       # Business logic
+│   │   ├── scripts/        # Utility scripts
+│   │   ├── sample-data/    # Test/sample data
+│   │   ├── utils/          # Helper functions
+│   │   └── validations/    # Input validation
+│   ├── uploads/            # File uploads
+│   └── server.js          # Server entry point
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── context/        # React contexts
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # Utility functions
+│   │   ├── pages/         # Page components
+│   │   ├── providers/     # Service providers
+│   │   ├── services/      # API services
+│   │   ├── store/         # State management
+│   │   ├── App.jsx        # Root component
+│   │   ├── App.css        # App styles
+│   │   ├── index.jsx      # Entry point
+│   │   └── index.css      # Global styles
+│   ├── public/            # Static assets
+│   ├── vite.config.ts     # Vite configuration
+│   ├── tailwind.config.ts # Tailwind configuration
+│   └── [various config files]
+│
+├── .env                   # Environment variables
+├── .env.example          # Environment template
+├── package.json          # Project dependencies
+└── package-lock.json     # Dependency lock file
