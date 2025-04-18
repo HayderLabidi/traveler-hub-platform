@@ -1,40 +1,24 @@
-
 const mongoose = require('mongoose');
 
 const photoSchema = new mongoose.Schema({
-  filename: {
-    type: String,
-    required: true
-  },
-  originalName: {
-    type: String,
-    required: true
-  },
-  mimetype: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
   path: {
     type: String,
     required: true
   },
-  size: {
-    type: Number,
-    required: true
+  type: {
+    type: String,
+    required: true,
+    enum: ['image/jpeg', 'image/png', 'image/gif']
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  uploadDate: {
+  uploadedAt: {
     type: Date,
     default: Date.now
   }
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
-const Photo = mongoose.model('Photo', photoSchema);
-
-module.exports = Photo;
+module.exports = mongoose.model('Photo', photoSchema);

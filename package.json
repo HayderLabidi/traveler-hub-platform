@@ -5,7 +5,8 @@
   "main": "./backend/server.js",
   "scripts": {
     "start": "node ./backend/server.js",
-    "dev": "nodemon ./backend/server.js",
+    "dev": "node ./node_modules/nodemon/bin/nodemon.js ./backend/server.js",
+    "seed": "node ./backend/src/seeders/seeder.js",
     "frontend": "cd frontend && npm run dev",
     "dev:all": "concurrently \"npm run dev\" \"npm run frontend\"",
     "build": "npm install",

@@ -26,20 +26,19 @@ const authService = {
       throw error.response?.data || { message: 'Registration failed' };
     }
   },
-
   // Login user
   login: async (credentials) => {
     try {
-      const response = await api.post('/users/login', credentials);
+      const response = await api.post('/auth/login', credentials);
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'Login failed' };
+      throw error.response?.data || error;
     }
   },
-
   // Logout user
   logout: () => {
     localStorage.removeItem('token');
@@ -47,13 +46,9 @@ const authService = {
   },
 
   // Get current user profile
-  getCurrentUser: async () => {
-    try {
-      const response = await api.get('/users/me');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch user' };
-    }
+  getCurrentUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   },
 
   // Update user's profile

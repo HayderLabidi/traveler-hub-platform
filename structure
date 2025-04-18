@@ -1,18 +1,46 @@
 PFE/
 ├── backend/
 │   ├── src/
-│   │   ├── config/         # Configuration files
-│   │   ├── controllers/    # Route controllers
-│   │   ├── middleware/     # Custom middleware
-│   │   ├── models/         # Database models
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   ├── scripts/        # Utility scripts
-│   │   ├── sample-data/    # Test/sample data
-│   │   ├── utils/          # Helper functions
-│   │   └── validations/    # Input validation
-│   ├── uploads/            # File uploads
-│   └── server.js          # Server entry point
+│   │   ├── config/
+│   │   │   ├── database.js        # MongoDB connection
+│   │   │   ├── multer.js         # File upload config
+│   │   │   └── passport.js       # Authentication config
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── authController.js  # Auth operations
+│   │   │   ├── userController.js  # User operations
+│   │   │   ├── photoController.js # Photo handling
+│   │   │   └── profileController.js # Profile operations
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── auth.js           # JWT authentication
+│   │   │   ├── roleCheck.js      # Role verification
+│   │   │   ├── upload.js         # File upload
+│   │   │   └── validation.js     # Request validation
+│   │   │
+│   │   ├── models/
+│   │   │   ├── User.js           # User model
+│   │   │   ├── Photo.js          # Photo model
+│   │   │   ├── Profile.js        # Profile model
+│   │   │   └── PaymentMethod.js  # Payment model
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js     # Auth routes
+│   │   │   ├── userRoutes.js     # User routes
+│   │   │   └── profileRoutes.js  # Profile routes
+│   │   │
+│   │   ├── services/
+│   │   │   ├── authService.js    # Auth business logic
+│   │   │   ├── userService.js    # User business logic
+│   │   │   └── emailService.js   # Email notifications
+│   │   │
+│   │   └── utils/
+│   │       ├── jwt.js            # JWT helpers
+│   │       ├── validation.js     # Validation helpers
+│   │       └── errorHandler.js   # Error handling
+│   │
+│   ├── uploads/                  # File uploads directory
+│   └── server.js                 # Entry point
 │
 ├── frontend/
 │   ├── src/
