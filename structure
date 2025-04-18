@@ -28,11 +28,13 @@ PFE/
 │   │   ├── App.css        # App styles
 │   │   ├── index.jsx      # Entry point
 │   │   └── index.css      # Global styles
-│   ├── public/            # Static assets
+│   ├── public/
+│   ├── .node_modules/               # Static assets
 │   ├── vite.config.ts     # Vite configuration
 │   ├── tailwind.config.ts # Tailwind configuration
 │   └── [various config files]
 │
+├── .node_modules/         # Node.js modules   
 ├── .env                   # Environment variables
 ├── .env.example          # Environment template
 ├── package.json          # Project dependencies
